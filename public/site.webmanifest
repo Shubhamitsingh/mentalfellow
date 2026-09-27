@@ -1,0 +1,8 @@
+{
+  "name": "Mental Fellow",
+  "short_name": "Mental Fellow",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f0ea",
+  "theme_color": "#121212"
+}
