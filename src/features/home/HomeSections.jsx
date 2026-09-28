@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { ButtonLink } from '@/components/ui/Button'
@@ -15,19 +15,54 @@ export function Hero() {
   const slides = hero.slides
   const pairList = []
   for (let i = 0; i < slides.length; i += 2) pairList.push(slides.slice(i, i + 2))
+  const count = pairList.length
+  const track = count > 1 ? [...pairList, pairList[0]] : pairList
   const [index, setIndex] = useState(0)
+  const [motionOn, setMotionOn] = useState(true)
+  const indexRef = useRef(0)
+  indexRef.current = index
+  const active = index === count ? 0 : index
 
   useEffect(() => {
-    if (pairList.length < 2) return undefined
+    if (count < 2) return undefined
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
     const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % pairList.length)
+      const visual = indexRef.current >= count ? 0 : indexRef.current
+      setMotionOn(true)
+      setIndex(visual + 1)
     }, 4000)
     return () => window.clearInterval(timer)
-  }, [pairList.length])
+  }, [count])
 
-  function go(next) {
-    setIndex((next + pairList.length) % pairList.length)
+  useEffect(() => {
+    if (motionOn) return undefined
+    const frame = window.requestAnimationFrame(() => setMotionOn(true))
+    return () => window.cancelAnimationFrame(frame)
+  }, [motionOn])
+
+  function finishLoop(event) {
+    if (event.propertyName !== 'transform' || event.target !== event.currentTarget) return
+    if (indexRef.current !== count) return
+    setMotionOn(false)
+    setIndex(0)
+  }
+
+  function go(step) {
+    const visual = indexRef.current >= count ? 0 : indexRef.current
+    const next = visual + step
+    if (next >= 0) {
+      setMotionOn(true)
+      setIndex(next > count ? count : next)
+      return
+    }
+    setMotionOn(false)
+    setIndex(count)
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        setMotionOn(true)
+        setIndex(count - 1)
+      })
+    })
   }
 
   return (
@@ -38,11 +73,12 @@ export function Hero() {
     >
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className="flex h-full transition-transform duration-700 ease-out"
+          className={`flex h-full ${motionOn ? 'transition-transform duration-700 ease-out' : ''}`}
           style={{ transform: `translateX(-${index * 100}%)` }}
+          onTransitionEnd={finishLoop}
         >
-          {pairList.map((pair) => (
-            <div key={pair[0].src} className="grid h-full min-w-full grid-cols-1 md:grid-cols-2">
+          {track.map((pair, pairIndex) => (
+            <div key={`${pair[0].src}-${pairIndex}`} className="grid h-full min-w-full grid-cols-1 md:grid-cols-2">
               {pair.map((slide) => (
                 <img
                   key={slide.src}
@@ -74,7 +110,7 @@ export function Hero() {
         type="button"
         className="absolute top-1/2 left-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper/90 text-ink"
         aria-label="Previous slide"
-        onClick={() => go(index - 1)}
+        onClick={() => go(-1)}
       >
         <ChevronLeft size={18} />
       </button>
@@ -82,7 +118,7 @@ export function Hero() {
         type="button"
         className="absolute top-1/2 right-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper/90 text-ink"
         aria-label="Next slide"
-        onClick={() => go(index + 1)}
+        onClick={() => go(1)}
       >
         <ChevronRight size={18} />
       </button>
@@ -92,9 +128,12 @@ export function Hero() {
             key={pair[0].src}
             type="button"
             aria-label={`Go to slide ${slideIndex + 1}`}
-            aria-current={slideIndex === index ? 'true' : undefined}
-            className={`h-2 rounded-full ${slideIndex === index ? 'w-6 bg-paper' : 'w-2 bg-paper/50'}`}
-            onClick={() => setIndex(slideIndex)}
+            aria-current={slideIndex === active ? 'true' : undefined}
+            className={`h-2 rounded-full ${slideIndex === active ? 'w-6 bg-paper' : 'w-2 bg-paper/50'}`}
+            onClick={() => {
+              setMotionOn(true)
+              setIndex(slideIndex)
+            }}
           />
         ))}
       </div>

@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { useUi } from '@/contexts/UiContext'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { site } from '@/lib/site'
 import { sendPhoneOtp, signOut, updatePassword, verifyPhoneOtp } from '@/services/auth'
 
 const fieldClass = 'h-12 w-full rounded-md border border-line bg-white px-4 text-sm outline-none placeholder:text-muted focus:border-leaf'
@@ -112,7 +113,9 @@ function LoginCard({ mode = 'account', onClose }) {
             }} />
           ) : (
             <>
-              <h1 className="text-xl font-medium">{mode === 'password' ? 'New password' : 'Log in'}</h1>
+              <p className="font-serif text-3xl leading-none">{site.name}</p>
+              <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-muted">{site.tagline}</p>
+              <h1 className="mt-6 text-xl font-medium">{mode === 'password' ? 'New password' : 'Log in'}</h1>
               <p className="mt-1 text-sm text-muted">
                 {mode === 'password'
                   ? 'Choose a new password for this account.'

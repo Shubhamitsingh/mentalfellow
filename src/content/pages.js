@@ -1,3 +1,5 @@
+import { site } from '@/lib/site'
+
 export const pages = {
   about: {
     title: 'About',
@@ -32,11 +34,73 @@ export const pages = {
   },
   shipping: {
     title: 'Shipping',
-    description: 'Delivery times, fees, and what “free shipping” means at Mental Fellow.',
-    paragraphs: [
-      'Orders of ₹999 and above ship free inside India. Below that, a flat shipping fee of ₹79 is added. The exact fee is calculated again at checkout from the server, not from the bag preview.',
-      'Most orders leave the studio in 1–2 working days and arrive in 3–6 days, depending on your pincode. Prepaid orders are packed ahead of cash-on-delivery orders when both are in the queue.',
-      'You will get a tracking link when the parcel is handed to the courier. We do not lock the shop to a single courier.',
+    description: 'Delivery times, fees, and what free shipping means at Mental Fellow.',
+    lead: 'We ship across India. The fee and the delivery window are clear before you pay.',
+    paragraphs: [],
+    sections: [
+      {
+        title: 'Where we deliver',
+        paragraphs: [
+          'Orders are delivered to pincodes inside India. We do not ship outside the country yet. Enter your pincode on the product page for an estimate. Checkout is where the address and the fee are confirmed.',
+        ],
+      },
+      {
+        title: 'What shipping costs',
+        paragraphs: [
+          `Orders of ₹${site.freeShippingThreshold} and above ship free. Below that, a flat fee of ₹${site.shippingFee} is added. The bag shows an estimate. Checkout calculates the fee again, and that is the amount you pay.`,
+          'The same fee applies to prepaid orders and to cash on delivery, when cash on delivery is offered at checkout. We do not add a separate platform charge.',
+        ],
+      },
+      {
+        title: 'When an order leaves',
+        paragraphs: [
+          'Most orders are packed in 1–2 working days, Monday to Saturday, not counting public holidays. If a prepaid order and a cash-on-delivery order are both waiting, the prepaid order is packed first.',
+        ],
+      },
+      {
+        title: 'How long it takes',
+        paragraphs: [
+          'After the parcel leaves, most pincodes receive it in 3–6 days. That window is a guide. Weather, public holidays, and the courier’s route can add time. If a delay is already clear, we write to you.',
+          'A product page can show its own estimate when the piece needs a little longer to finish. That note overrides the usual 3–6 days for that piece only.',
+        ],
+      },
+      {
+        title: 'Tracking',
+        paragraphs: [
+          'You receive a tracking link by email when the parcel is handed to the courier. We are not tied to one courier. You can also follow an order from the track-order page with the order number and the email used at checkout.',
+        ],
+      },
+      {
+        title: 'More than one piece',
+        paragraphs: [
+          'If two pieces in the same order cannot leave together, we may send them in separate parcels. You get a tracking link for each one, and you are not charged shipping a second time.',
+        ],
+      },
+      {
+        title: 'Address and delivery attempts',
+        paragraphs: [
+          'Check the name, phone, and address before you pay. After the parcel has left, the courier usually cannot change the address.',
+          'If nobody is home or the address is incomplete, the courier tries again. If it still cannot be delivered, the parcel comes back to us and we contact you about sending it out again.',
+        ],
+      },
+      {
+        title: 'If a parcel is late or damaged',
+        paragraphs: [
+          `If the expected date has passed and tracking has not moved, write to ${site.contactEmail} with your order number.`,
+          'If the parcel arrives damaged, or the piece is not what you ordered, write to the same address as soon as you open it. Include the order number and photos of the piece and the packaging. We will replace it or refund it.',
+        ],
+      },
+      {
+        title: 'Returns and exchanges',
+        paragraphs: [
+          `Unused pieces, with tags, can be returned or exchanged within ${site.exchangeWindowDays} days of delivery. The full rules sit on the returns and exchange pages.`,
+        ],
+      },
+    ],
+    links: [
+      { href: '/returns', label: 'Returns and refunds' },
+      { href: '/exchange', label: 'Exchanges' },
+      { href: '/track-order', label: 'Track an order' },
     ],
   },
   returns: {
