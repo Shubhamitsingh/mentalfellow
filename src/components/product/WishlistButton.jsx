@@ -10,14 +10,14 @@ export function WishlistButton({ product, className }) {
       type="button"
       aria-pressed={saved}
       aria-label={saved ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
-      className={cn('grid place-items-center text-ink', className)}
+      className={cn('grid place-items-center', className)}
       onClick={(event) => {
         event.preventDefault()
         event.stopPropagation()
         toggle(product)
       }}
     >
-      <Heart size={18} className={saved ? 'fill-ink' : ''} />
+      <Heart size={16} className={saved ? 'fill-current' : ''} />
     </button>
   )
 }

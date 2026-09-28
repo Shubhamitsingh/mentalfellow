@@ -20,7 +20,7 @@ export default function MaterialsPage() {
       <p className="text-[11px] uppercase tracking-[0.18em] text-muted">Materials</p>
       <h1 className="mt-3 max-w-3xl font-serif text-5xl leading-none text-leaf md:text-6xl">Rice straw and wheat straw.</h1>
       <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
-        I make only these two. Rice straw becomes the leather. Wheat straw becomes the suede. Both belong to Sonbhadra, Uttar Pradesh, which is home.
+        Two materials. Rice straw becomes the leather. Wheat straw becomes the suede. The piece names which one you are holding.
       </p>
       <ul className="mt-8 grid gap-6 lg:grid-cols-2">
         {line.map((material) => {

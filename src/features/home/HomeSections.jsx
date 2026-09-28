@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, ShoppingBag, Sprout, Tag, Wheat } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ShoppingBag, Sprout, Star, Tag, Wheat } from 'lucide-react'
 import { ButtonLink } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProductCard } from '@/components/product/ProductCard'
-import { NewsletterForm } from '@/features/home/NewsletterForm'
-import { materials } from '@/content/taxonomy'
+import { previewProducts, previewReviews } from '@/content/previewCatalog'
+import { toView } from '@/services/catalog'
+import { formatMoney } from '@/utils/format'
 import { collectionBySlug } from '@/content/taxonomy'
 import { homeContent } from '@/content/home'
 
@@ -167,9 +168,14 @@ export function ShopDoors() {
   return (
     <section className="py-4 md:py-6">
       <Container className="max-w-[1680px] px-4 md:px-6">
-        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden">
-          {homeContent.doors.map((item) => (
-            <CategoryTile key={item.href} item={item} large className="aspect-[2/3] w-[82%] shrink-0 snap-start bg-white md:w-full" />
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-4 pb-1 [contain:paint] [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 md:[contain:none] [&::-webkit-scrollbar]:hidden">
+          {homeContent.doors.map((item, index) => (
+            <CategoryTile
+              key={item.href}
+              item={item}
+              large
+              className={`aspect-[2/3] w-[82%] shrink-0 bg-white md:w-full ${index === homeContent.doors.length - 1 ? 'snap-end' : 'snap-start'}`}
+            />
           ))}
         </div>
       </Container>
@@ -177,12 +183,12 @@ export function ShopDoors() {
   )
 }
 
-export function HomeProducts({ products, eyebrow, title, href }) {
+export function HomeProducts({ products, eyebrow, title, href, mark = true }) {
   if (!products?.length) return null
   return (
     <section className="py-6 md:py-8">
       <Container className="max-w-[1680px] px-4 md:px-6">
-        <SectionHeading compact center eyebrow={eyebrow} title={title} href={href} />
+        <SectionHeading compact center mark={mark} eyebrow={eyebrow} title={title} href={href} />
         <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-4 lg:gap-y-8">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -194,76 +200,80 @@ export function HomeProducts({ products, eyebrow, title, href }) {
 }
 
 export function ShopByMaterial() {
-  const row = useRef(null)
-
-  function move(direction) {
-    const scroller = row.current
-    if (!scroller) return
-    const card = scroller.querySelector('a')
-    const distance = (card?.offsetWidth || 240) + 16
-    scroller.scrollBy({ left: direction * distance, behavior: 'smooth' })
-  }
-
   return (
     <section className="py-8 md:py-12" aria-labelledby="shop-by-material">
       <Container>
-        <h2 id="shop-by-material" className="text-center font-serif text-3xl text-ink md:text-4xl">
-          Shop by material
+        <h2 id="shop-by-material" className="text-center text-xl font-medium uppercase tracking-[0.18em] text-ink md:text-2xl">
+          Shop by collection
         </h2>
-        <div className="relative mt-6 md:mt-8">
-          <button
-            type="button"
-            aria-label="Previous materials"
-            onClick={() => move(-1)}
-            className="absolute top-1/2 left-0 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink shadow-sm ring-1 ring-line"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <div
-            ref={row}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {homeContent.shopByMaterial.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className="w-[72%] shrink-0 snap-start sm:w-[46%] lg:w-[23%]"
-              >
-                <span className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-paper-2">
-                  <img src={item.image} alt={item.alt} className="h-full w-full object-cover object-[center_20%]" />
-                  <span className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ink/55 to-transparent" />
-                  <span className="absolute inset-x-3 top-4 text-center font-serif text-2xl leading-none text-paper md:text-[1.7rem]">
-                    {item.label}
-                  </span>
+        <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain [contain:paint] [scrollbar-width:none] md:grid md:grid-cols-4 md:overflow-visible md:[contain:none] [&::-webkit-scrollbar]:hidden">
+          {homeContent.shopByMaterial.map((item, index) => (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={`w-[78%] shrink-0 sm:w-[46%] md:w-auto ${index === homeContent.shopByMaterial.length - 1 ? 'snap-end' : 'snap-start'}`}
+            >
+              <span className="relative block aspect-[3/4] overflow-hidden rounded-xl bg-paper-2">
+                <img src={item.image} alt={item.alt} className="h-full w-full object-cover object-[center_18%]" />
+                <span className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-ink/50 to-transparent" />
+                <span className="absolute inset-x-3 top-5 text-center text-[1.85rem] font-semibold uppercase leading-none tracking-[0.04em] text-paper drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)] md:text-4xl lg:text-5xl">
+                  {item.label}
                 </span>
-              </Link>
-            ))}
-          </div>
-          <button
-            type="button"
-            aria-label="Next materials"
-            onClick={() => move(1)}
-            className="absolute top-1/2 right-0 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink shadow-sm ring-1 ring-line"
-          >
-            <ChevronRight size={18} />
-          </button>
+              </span>
+            </Link>
+          ))}
         </div>
       </Container>
     </section>
   )
 }
 
-export function CategoryGrid() {
+export function CustomerNotes() {
+  const notes = Object.entries(previewReviews).flatMap(([slug, reviews]) => {
+    const product = previewProducts.find((item) => item.slug === slug)
+    if (!product) return []
+    const view = toView(product)
+    return reviews.map((review) => ({
+      ...review,
+      product: view,
+      image: review.image,
+      imageAlt: review.imageAlt || view.name,
+    }))
+  })
+
+  if (!notes.length) return null
+
   return (
-    <section className="py-8 md:py-12">
+    <section className="py-8 md:py-12" aria-labelledby="customer-notes">
       <Container>
-        <SectionHeading eyebrow="Find" title="Shop the line" />
-        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
-          {homeContent.departments.map((item) => (
-            <CategoryTile key={item.href} item={item} className="aspect-[3/4] rounded-2xl" />
-          ))}
-        </div>
+        <h2 id="customer-notes" className="text-center text-xl font-medium uppercase tracking-[0.18em] text-ink md:text-2xl">
+          What customers say
+        </h2>
       </Container>
+      <div className="mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain scroll-ps-5 scroll-pe-5 px-5 [contain:paint] [scrollbar-width:none] md:scroll-ps-8 md:scroll-pe-8 md:px-8 lg:scroll-ps-10 lg:scroll-pe-10 lg:px-10 [&::-webkit-scrollbar]:hidden">
+        {notes.map((note, index) => (
+          <article key={note.id} className={`w-[calc(100%-1.5rem)] shrink-0 overflow-hidden rounded-2xl border border-line bg-white sm:w-[300px] ${index === notes.length - 1 ? 'snap-end' : 'snap-start'}`}>
+              <Link to={`/product/${note.product.slug}`} className="block">
+                <img src={note.image} alt={note.imageAlt} className="aspect-[3/4] w-full object-cover object-[center_18%]" />
+              </Link>
+              <div className="p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-medium">{note.author}</p>
+                  <p className="inline-flex items-center gap-1 text-sm">
+                    <Star size={14} className="fill-straw text-straw" aria-hidden />
+                    <span>{note.rating.toFixed(1)}</span>
+                    <span className="sr-only">out of 5</span>
+                  </p>
+                </div>
+                <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-muted">{note.body}</p>
+                <Link to={`/product/${note.product.slug}`} className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3 text-sm">
+                  <span className="font-medium">{note.product.name}</span>
+                  <span>{formatMoney(note.product.price)}</span>
+                </Link>
+              </div>
+            </article>
+          ))}
+      </div>
     </section>
   )
 }
@@ -331,50 +341,6 @@ export function FeaturedCollection({ products }) {
   )
 }
 
-const innovationSlugs = ['paddy-rice-waste', 'wheat-waste']
-
-export function MaterialInnovation() {
-  const items = innovationSlugs.map((slug) => materials.find((item) => item.slug === slug)).filter(Boolean)
-  return (
-    <section className="border-t border-line py-12 md:py-20">
-      <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-muted">The material</p>
-            <h2 className="mt-3 max-w-md font-serif text-4xl leading-[1.05] md:text-6xl">From a field in Sonbhadra.</h2>
-            <p className="mt-5 max-w-md text-base leading-relaxed">
-              After the crop is cut, rice straw and wheat straw are what remain. Rice straw is finished into leather. Wheat straw is finished into suede. The straw is named on the product.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <ButtonLink to="/our-story" variant="secondary">Read the story</ButtonLink>
-              <Link to="/materials" className="text-[11px] uppercase tracking-[0.16em] text-leaf underline underline-offset-4">
-                All materials
-              </Link>
-            </div>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {items.map((material) => (
-              <Link key={material.slug} to={`/materials/${material.slug}`} className="group">
-                <span className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-paper-2">
-                  <img
-                    src={material.image}
-                    alt=""
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 via-ink/45 to-transparent p-4 pt-16 text-paper md:p-5">
-                    <span className="block font-serif text-2xl leading-none">{material.name}</span>
-                    <span className="mt-2 block text-sm leading-snug text-paper/90">{material.story}</span>
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </Container>
-    </section>
-  )
-}
-
 export function BrandStory() {
   const { story } = homeContent
   return (
@@ -409,14 +375,4 @@ const materialNoteIcons = {
   wheat: Wheat,
   tag: Tag,
   bag: ShoppingBag,
-}
-
-export function NewsletterBand() {
-  return (
-    <section className="border-t border-line py-12">
-      <Container className="max-w-xl">
-        <NewsletterForm />
-      </Container>
-    </section>
-  )
 }

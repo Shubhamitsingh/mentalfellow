@@ -34,6 +34,7 @@ export const primaryNav = [
   { id: 'footwear', label: 'Footwear', href: '/footwear', menu: 'footwear' },
   { id: 'travel', label: 'Travel', href: '/travel', menu: 'travel' },
   { id: 'collections', label: 'Collections', href: '/collections', menu: 'collections' },
+  { id: 'blog', label: 'Blog', href: '/blog' },
 ]
 
 export { collections, menus }
@@ -80,6 +81,7 @@ export const footerColumns = [
     links: [
       { label: 'About', href: '/about' },
       { label: 'Our Story', href: '/our-story' },
+      { label: 'Blog', href: '/blog' },
       { label: 'Careers', href: '/careers' },
       { label: 'Privacy', href: '/privacy' },
       { label: 'Terms', href: '/terms' },

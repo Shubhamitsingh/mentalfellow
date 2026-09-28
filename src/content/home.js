@@ -1,5 +1,3 @@
-import { photo } from '@/content/media'
-
 export const homeContent = {
   hero: {
     eyebrow: 'Mental Fellow',
@@ -35,60 +33,28 @@ export const homeContent = {
   ],
   shopByMaterial: [
     {
-      label: 'Rice Straw',
-      href: '/materials/paddy-rice-waste',
+      label: 'Travel',
+      href: '/collections/travel',
       image: '/uploads/model15.jpg',
       alt: 'A woman in a yellow cropped hoodie',
     },
     {
-      label: 'Wheat Straw',
-      href: '/materials/wheat-waste',
-      image: '/uploads/model14.png',
-      alt: 'A man in a black sleeveless top and sunglasses',
+      label: 'Office',
+      href: '/collections/office',
+      image: '/uploads/model16.jpg',
+      alt: 'A woman in an orange suit holding her blazer open',
     },
     {
-      label: 'Banana Fibre',
-      href: '/materials/banana-fibre',
+      label: 'Evening',
+      href: '/collections/wedding',
       image: '/uploads/model9.png',
       alt: 'A woman in a yellow top and pink sunglasses',
     },
     {
-      label: 'Pineapple Fibre',
-      href: '/materials/pineapple-fibre',
+      label: 'Premium',
+      href: '/collections/premium',
       image: '/uploads/model5.png',
       alt: 'A woman in yellow holding a blue bag',
-    },
-    {
-      label: 'Recycled Textile',
-      href: '/materials/recycled-textile',
-      image: '/uploads/model6.png',
-      alt: 'A person in a lime hood carrying a red bag',
-    },
-  ],
-  departments: [
-    {
-      label: 'Bags',
-      href: '/bags',
-      image: photo('photo-1584917865442-de89df76afd3', 900, 1100),
-      alt: 'A brown leather-like tote',
-    },
-    {
-      label: 'Wallets & accessories',
-      href: '/wallets',
-      image: photo('photo-1627123424574-724758594e93', 900, 1100),
-      alt: 'A slim wallet opened on a table',
-    },
-    {
-      label: 'Footwear',
-      href: '/footwear',
-      image: photo('photo-1533867617858-e7b97e060509', 900, 1100),
-      alt: 'A pair of black derby shoes',
-    },
-    {
-      label: 'Travel',
-      href: '/travel',
-      image: photo('photo-1547949003-9792a18a2601', 900, 1100),
-      alt: 'A travel bag standing on the floor',
     },
   ],
   materialStory: {

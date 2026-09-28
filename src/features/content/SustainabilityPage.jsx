@@ -8,7 +8,7 @@ const sections = [
     id: 'source',
     kicker: 'Where materials come from',
     title: 'A residue is not a product yet.',
-    body: 'I work with two straws from Sonbhadra, Uttar Pradesh. Rice straw is finished as leather. Wheat straw is finished as suede. The product page tells you which one you are holding.',
+    body: 'We work with two straws. Rice straw is finished as leather. Wheat straw is finished as suede. The product page tells you which one you are holding.',
     image: '/materials/rice-straw-leather.png',
     alt: 'Rice-straw leather beside a bundle of rice straw',
   },

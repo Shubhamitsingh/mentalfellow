@@ -14,13 +14,12 @@ export const pages = {
   },
   'our-story': {
     title: 'Our story',
-    description: 'How Mental Fellow started in a farmer’s field in Sonbhadra, Uttar Pradesh.',
-    lead: 'I am from Sonbhadra, in Uttar Pradesh. That is where this work begins.',
+    description: 'How Mental Fellow finishes rice straw as leather and wheat straw as suede.',
+    lead: 'The piece starts where the harvest ends.',
     paragraphs: [
-      'My father is a farmer. I grew up in the fields, not around them. I have cut rice, I have cut wheat, and I know what is left standing in the ground once the grain is gone. That leftover straw was never waste to us — it was just part of the season, something we lived with every year.',
-      'The fields around home still set the pace of the year. When the crop is cut, rice straw and wheat straw are what remain on the ground. I grew up seeing that straw as part of the place, not as something to throw away. I wanted it in the things people keep close.',
-      'Both materials start as straw from this part of the country — the same straw my father’s fields have given up every harvest.',
-      'This is a small shop with a clear start: a farmer’s field in Sonbhadra first, rice straw and wheat straw next, then a product you can actually use.',
+      'The grain is taken. Rice straw and wheat straw remain. We finish the first as leather and the second as suede, then cut them into bags, wallets, belts, shoes, and travel pieces.',
+      'A sheet is not the product. The product is something you carry, wear, and use: a sling for the day, a belt that sits cleanly, a shoe you can walk in.',
+      'Every piece names its material. If a strap, lining, or sole is something else, that is written beside it. The claim stays as exact as the object.',
     ],
     more: { href: '/about', label: 'About the shop' },
   },

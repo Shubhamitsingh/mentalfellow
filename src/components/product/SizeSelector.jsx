@@ -1,6 +1,6 @@
 import { cn } from '@/utils/cn'
 
-export function SizeSelector({ variants, value, onChange, action }) {
+export function SizeSelector({ variants, value, onChange, action, optionClassName }) {
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
@@ -20,6 +20,7 @@ export function SizeSelector({ variants, value, onChange, action }) {
               disabled={soldOut}
               className={cn(
                 'h-11 min-w-11 px-3 text-sm',
+                optionClassName,
                 selected ? 'bg-leaf text-paper' : 'border border-line',
                 soldOut && 'text-muted line-through opacity-50',
               )}

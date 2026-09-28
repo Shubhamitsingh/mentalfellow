@@ -19,6 +19,8 @@ const OffersPage = lazy(() => import('@/features/offers/OffersPage'))
 const CollectionsPage = lazy(() => import('@/features/catalog/CollectionsPage'))
 const MaterialsPage = lazy(() => import('@/features/materials/MaterialsPage'))
 const SustainabilityPage = lazy(() => import('@/features/content/SustainabilityPage'))
+const BlogPage = lazy(() => import('@/features/content/BlogPage'))
+const BlogPostPage = lazy(() => import('@/features/content/BlogPage').then((module) => ({ default: module.BlogPostPage })))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 export function AppRoutes() {
@@ -56,6 +58,8 @@ export function AppRoutes() {
           <Route path="size-guide" element={<SizeGuidePage />} />
           <Route path="track-order" element={<TrackOrderPage />} />
           <Route path="offers" element={<OffersPage />} />
+          <Route path="blog" element={<BlogPage />} />
+          <Route path="blog/:slug" element={<BlogPostPage />} />
           <Route path="about" element={<ContentPage slug="about" />} />
           <Route path="our-story" element={<ContentPage slug="our-story" />} />
           <Route path="careers" element={<ContentPage slug="careers" />} />

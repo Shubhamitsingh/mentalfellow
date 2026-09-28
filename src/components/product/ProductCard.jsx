@@ -35,9 +35,10 @@ export function ProductCard({ product }) {
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
           />
         </Link>
+        <WishlistButton product={product} className="absolute top-3 right-3 z-10 h-9 w-9 rounded-full bg-white text-leaf shadow-sm" />
         <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
           {product.badges.map((badge) => (
-            <Badge key={badge} tone={badge === 'SALE' ? 'sale' : badge === 'NEW' ? 'new' : 'default'}>
+            <Badge key={badge} tone={badge === 'SALE' ? 'sale' : badge === 'NEW' ? 'new' : badge === 'BESTSELLER' ? 'leaf' : 'default'}>
               {badge === 'BESTSELLER' ? 'Bestseller' : badge === 'SALE' ? 'Sale' : 'New'}
             </Badge>
           ))}
@@ -71,18 +72,22 @@ export function ProductCard({ product }) {
             </div>
           ) : null}
         </div>
-        <div className="absolute inset-x-0 bottom-0 hidden bg-paper/95 p-3 md:group-focus-within:block md:group-hover:block">
-          <button type="button" className="text-[11px] uppercase tracking-[0.16em] underline underline-offset-4" onClick={() => setQuickOpen(true)}>
+        <div className="absolute inset-x-2.5 bottom-2.5 z-10 hidden flex-col gap-1.5 rounded-2xl bg-white/95 p-2 shadow-[0_10px_28px_rgba(22,24,21,0.14)] md:group-focus-within:flex md:group-hover:flex">
+          <button
+            type="button"
+            className="h-9 w-full rounded-xl text-[11px] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-paper"
+            onClick={() => setQuickOpen(true)}
+          >
             Quick view
           </button>
           {sizes.length > 1 ? (
-            <div className="mt-2 flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1">
               {sizes.map((variant) => (
                 <button
                   key={variant.id}
                   type="button"
                   disabled={variant.stock < 1}
-                  className="h-9 min-w-9 border border-line px-2 text-xs disabled:line-through disabled:opacity-40"
+                  className="h-9 min-w-9 rounded-lg border border-line bg-white px-2 text-xs transition-colors hover:border-ink disabled:line-through disabled:opacity-40"
                   onClick={() => quickAdd(variant)}
                 >
                   {variant.size}
@@ -93,7 +98,7 @@ export function ProductCard({ product }) {
             <button
               type="button"
               disabled={!sizes[0] || sizes[0].stock < 1}
-              className="mt-2 h-9 w-full border border-line text-xs disabled:opacity-40"
+              className="h-10 w-full rounded-xl bg-leaf text-[11px] font-medium uppercase tracking-[0.16em] text-paper transition-colors hover:bg-[#184a33] disabled:opacity-40"
               onClick={() => sizes[0] && quickAdd(sizes[0])}
             >
               {sizes[0]?.stock < 1 ? 'Sold out' : 'Add to bag'}
@@ -102,12 +107,9 @@ export function ProductCard({ product }) {
         </div>
       </div>
       <div className="pt-3">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="text-sm font-medium">
-            <Link to={`/product/${product.slug}`}>{product.name}</Link>
-          </h3>
-          <WishlistButton product={product} className="h-7 w-7 shrink-0" />
-        </div>
+        <h3 className="text-sm font-medium">
+          <Link to={`/product/${product.slug}`}>{product.name}</Link>
+        </h3>
         <p className="mt-1 text-sm text-muted">{product.descriptor}</p>
         <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-leaf">{product.materialName}</p>
         <div className="mt-2">

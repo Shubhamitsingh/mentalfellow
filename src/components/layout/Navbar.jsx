@@ -25,7 +25,7 @@ export function Navbar() {
         <Link to="/" className="flex shrink-0 items-center" aria-label={site.name}>
           <img src={site.logo} alt="" className="h-11 w-auto object-contain md:h-14" />
         </Link>
-        <nav className="ml-6 hidden min-w-0 items-center gap-x-2.5 xl:flex" aria-label="Primary">
+        <nav className="ml-6 hidden min-w-0 items-center gap-x-3 xl:flex min-[1440px]:ml-8 min-[1440px]:gap-x-5" aria-label="Primary">
           {primaryNav.map((item) => {
             const active = isActive(item, pathname)
             const mega = Boolean(item.menu)
@@ -46,12 +46,12 @@ export function Navbar() {
           <button
             type="button"
             onClick={ui.openSearch}
-            className="mr-2 hidden h-10 w-32 items-center gap-2 rounded-full border border-line bg-white px-4 text-left text-sm text-muted xl:flex"
+            className="mr-2 hidden h-10 w-32 items-center gap-2 rounded-full border border-line bg-white px-4 text-left text-sm text-muted min-[1440px]:flex"
           >
             <Search size={16} />
             Search
           </button>
-          <IconButton label="Search" className="xl:hidden" onClick={ui.openSearch}>
+          <IconButton label="Search" className="min-[1440px]:hidden" onClick={ui.openSearch}>
             <Search size={20} />
           </IconButton>
           <Link to="/wishlist" className="relative grid h-11 w-11 place-items-center" aria-label={`Wishlist, ${wishlist.count} saved`}>
@@ -91,5 +91,6 @@ function Count({ value }) {
 
 function isActive(item, pathname) {
   if (item.id === 'collections') return pathname.startsWith('/collections')
+  if (item.id === 'blog') return pathname === '/blog' || pathname.startsWith('/blog/')
   return pathname === item.href
 }

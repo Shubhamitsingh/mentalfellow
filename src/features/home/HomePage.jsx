@@ -3,14 +3,12 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { ProductGridSkeleton } from '@/components/ui/LoadingState'
 import {
   BrandStory,
-  CategoryGrid,
   EditorialBanner,
   Hero,
   HomeProducts,
+  CustomerNotes,
   ShopByMaterial,
   ShopDoors,
-  MaterialInnovation,
-  NewsletterBand,
   TrustStrip,
 } from '@/features/home/HomeSections'
 import { useAsync } from '@/hooks/useAsync'
@@ -41,7 +39,7 @@ export default function HomePage() {
       {state.status === 'success' ? (
         <>
           <HomeProducts
-            title="New"
+            title="New Arrivals"
             href="/new-arrivals"
             products={state.data.products.filter((product) => product.flags.new).slice(0, 5)}
           />
@@ -60,13 +58,11 @@ export default function HomePage() {
             href="/men"
             products={state.data.products.filter((product) => product.gender === 'men').slice(0, 5)}
           />
-          <CategoryGrid />
+          <CustomerNotes />
           <EditorialBanner />
-          <MaterialInnovation />
         </>
       ) : null}
       <BrandStory />
-      <NewsletterBand />
     </>
   )
 }

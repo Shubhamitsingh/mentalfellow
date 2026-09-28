@@ -41,7 +41,7 @@ export function ProductGallery({ images, alt }) {
           ) : null}
         </div>
       </div>
-      <div className="flex snap-x snap-mandatory overflow-x-auto md:hidden">
+      <div className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [contain:paint] md:hidden">
         {images.map((image, index) => (
           <img key={`${image}-${index}`} src={image} alt={index === 0 ? alt : ''} className="aspect-[4/5] w-full shrink-0 snap-center rounded-xl bg-paper-2 object-cover" />
         ))}

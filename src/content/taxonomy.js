@@ -143,7 +143,7 @@ export const materials = [
     slug: 'paddy-rice-waste',
     name: 'Rice Straw Leather',
     source: 'Rice Straw',
-    summary: 'Leather made from rice straw gathered in Sonbhadra, Uttar Pradesh.',
+    summary: 'Leather finished from rice straw, and named on the piece.',
     story: 'The straw is collected after the crop is cut. What you hold is the leather finished from that straw.',
     image: '/materials/rice-straw-leather.png',
   },
