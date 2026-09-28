@@ -7,6 +7,7 @@ import {
   EditorialBanner,
   Hero,
   HomeProducts,
+  ShopByMaterial,
   ShopDoors,
   MaterialInnovation,
   NewsletterBand,
@@ -26,6 +27,7 @@ export default function HomePage() {
       <Hero />
       <TrustStrip />
       <ShopDoors />
+      <ShopByMaterial />
       {state.status === 'loading' ? (
         <Container className="py-16">
           <ProductGridSkeleton />
@@ -39,16 +41,24 @@ export default function HomePage() {
       {state.status === 'success' ? (
         <>
           <HomeProducts
-            eyebrow="Just in"
             title="New"
             href="/new-arrivals"
             products={state.data.products.filter((product) => product.flags.new).slice(0, 5)}
           />
           <HomeProducts
-            eyebrow="Most kept"
             title="Bestsellers"
             href="/bestsellers"
             products={state.data.products.filter((product) => product.flags.bestseller).slice(0, 5)}
+          />
+          <HomeProducts
+            title="Women"
+            href="/women"
+            products={state.data.products.filter((product) => product.gender === 'women').slice(0, 5)}
+          />
+          <HomeProducts
+            title="Men"
+            href="/men"
+            products={state.data.products.filter((product) => product.gender === 'men').slice(0, 5)}
           />
           <CategoryGrid />
           <EditorialBanner />

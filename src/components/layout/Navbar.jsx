@@ -17,15 +17,15 @@ export function Navbar() {
   const [openMenu, setOpenMenu] = useState(null)
 
   return (
-    <header className="relative border-b border-line bg-paper/95 backdrop-blur" onMouseLeave={() => setOpenMenu(null)}>
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-3 px-4 md:h-[72px] md:px-8 lg:px-10">
+    <header className="relative border-b border-line bg-paper" onMouseLeave={() => setOpenMenu(null)}>
+      <div className="mx-auto flex h-[4.5rem] max-w-[1600px] items-center gap-3 px-4 md:h-20 md:px-8 lg:px-10">
         <IconButton label="Open menu" className="xl:hidden" onClick={ui.openMenu}>
           <Menu size={20} />
         </IconButton>
-        <Link to="/" className="shrink-0 font-serif text-2xl leading-none tracking-tight sm:text-3xl">
-          {site.name}
+        <Link to="/" className="flex shrink-0 items-center" aria-label={site.name}>
+          <img src={site.logo} alt="" className="h-11 w-auto object-contain md:h-14" />
         </Link>
-        <nav className="ml-6 hidden min-w-0 items-center gap-4 xl:flex" aria-label="Primary">
+        <nav className="ml-6 hidden min-w-0 items-center gap-x-2.5 xl:flex" aria-label="Primary">
           {primaryNav.map((item) => {
             const active = isActive(item, pathname)
             const mega = Boolean(item.menu)
@@ -34,7 +34,7 @@ export function Navbar() {
                 <Link
                   to={item.href}
                   aria-expanded={mega ? openMenu === item.menu : undefined}
-                  className={`relative whitespace-nowrap py-6 text-[10px] uppercase tracking-[0.14em] ${active ? 'after:absolute after:bottom-4 after:left-0 after:h-px after:w-full after:bg-current' : ''}`}
+                  className={`relative whitespace-nowrap py-7 text-sm uppercase tracking-[0.06em] text-ink/80 hover:text-ink ${active ? 'text-ink after:absolute after:bottom-5 after:left-0 after:h-px after:w-full after:bg-ink' : ''}`}
                 >
                   {item.label}
                 </Link>
@@ -42,11 +42,11 @@ export function Navbar() {
             )
           })}
         </nav>
-        <div className="ml-auto flex shrink-0 items-center">
+        <div className="ml-auto flex shrink-0 items-center gap-1">
           <button
             type="button"
             onClick={ui.openSearch}
-            className="mr-2 hidden h-11 w-40 items-center gap-2 border border-line px-3 text-left text-sm text-muted xl:flex"
+            className="mr-2 hidden h-10 w-32 items-center gap-2 rounded-full border border-line bg-white px-4 text-left text-sm text-muted xl:flex"
           >
             <Search size={16} />
             Search

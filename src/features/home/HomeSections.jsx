@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ShoppingBag, Sprout, Tag, Wheat } from 'lucide-react'
 import { ButtonLink } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -105,10 +105,10 @@ export function Hero() {
           <div className="mx-auto max-w-4xl px-14 text-center md:px-20">
             <p className="text-[11px] uppercase tracking-[0.28em] text-paper/80">{hero.eyebrow}</p>
             <h1 className="mt-2 text-paper">
-              <span className="block font-sans text-5xl font-light uppercase tracking-[0.22em] md:text-7xl md:tracking-[0.28em]">
+              <span className="block whitespace-nowrap font-sans text-[clamp(1.55rem,9vw,3rem)] font-light uppercase tracking-[0.08em] sm:tracking-[0.16em] md:text-7xl md:tracking-[0.28em]">
                 {hero.title}
               </span>
-              <span className="mt-4 block whitespace-nowrap font-script text-[7rem] leading-none md:mt-6 md:text-[12rem]">{hero.emphasis}</span>
+              <span className="mt-[10px] block whitespace-nowrap font-script text-[7rem] leading-none md:mt-[18px] md:text-[12rem]">{hero.emphasis}</span>
             </h1>
             <p className="mx-auto mt-4 max-w-md text-sm text-paper/90 md:text-base">{hero.subtitle}</p>
             <div className="mt-8 flex justify-center">
@@ -167,9 +167,9 @@ export function ShopDoors() {
   return (
     <section className="py-4 md:py-6">
       <Container className="max-w-[1680px] px-4 md:px-6">
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden">
           {homeContent.doors.map((item) => (
-            <CategoryTile key={item.href} item={item} large className="aspect-[2/3] w-full bg-white" />
+            <CategoryTile key={item.href} item={item} large className="aspect-[2/3] w-[82%] shrink-0 snap-start bg-white md:w-full" />
           ))}
         </div>
       </Container>
@@ -182,7 +182,7 @@ export function HomeProducts({ products, eyebrow, title, href }) {
   return (
     <section className="py-6 md:py-8">
       <Container className="max-w-[1680px] px-4 md:px-6">
-        <SectionHeading compact eyebrow={eyebrow} title={title} href={href} />
+        <SectionHeading compact center eyebrow={eyebrow} title={title} href={href} />
         <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-4 lg:gap-y-8">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -193,14 +193,74 @@ export function HomeProducts({ products, eyebrow, title, href }) {
   )
 }
 
+export function ShopByMaterial() {
+  const row = useRef(null)
+
+  function move(direction) {
+    const scroller = row.current
+    if (!scroller) return
+    const card = scroller.querySelector('a')
+    const distance = (card?.offsetWidth || 240) + 16
+    scroller.scrollBy({ left: direction * distance, behavior: 'smooth' })
+  }
+
+  return (
+    <section className="py-8 md:py-12" aria-labelledby="shop-by-material">
+      <Container>
+        <h2 id="shop-by-material" className="text-center font-serif text-3xl text-ink md:text-4xl">
+          Shop by material
+        </h2>
+        <div className="relative mt-6 md:mt-8">
+          <button
+            type="button"
+            aria-label="Previous materials"
+            onClick={() => move(-1)}
+            className="absolute top-1/2 left-0 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink shadow-sm ring-1 ring-line"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <div
+            ref={row}
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {homeContent.shopByMaterial.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className="w-[72%] shrink-0 snap-start sm:w-[46%] lg:w-[23%]"
+              >
+                <span className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-paper-2">
+                  <img src={item.image} alt={item.alt} className="h-full w-full object-cover object-[center_20%]" />
+                  <span className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ink/55 to-transparent" />
+                  <span className="absolute inset-x-3 top-4 text-center font-serif text-2xl leading-none text-paper md:text-[1.7rem]">
+                    {item.label}
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+          <button
+            type="button"
+            aria-label="Next materials"
+            onClick={() => move(1)}
+            className="absolute top-1/2 right-0 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink shadow-sm ring-1 ring-line"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </Container>
+    </section>
+  )
+}
+
 export function CategoryGrid() {
   return (
-    <section className="py-4 md:py-8">
+    <section className="py-8 md:py-12">
       <Container>
         <SectionHeading eyebrow="Find" title="Shop the line" />
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
           {homeContent.departments.map((item) => (
-            <CategoryTile key={item.href} item={item} className="h-36 md:h-44" />
+            <CategoryTile key={item.href} item={item} className="aspect-[3/4] rounded-2xl" />
           ))}
         </div>
       </Container>
@@ -214,20 +274,22 @@ function CategoryTile({ item, className, large = false }) {
       <img
         src={item.image}
         alt={item.alt}
-        className={large
-          ? 'absolute inset-0 h-full w-full object-cover object-center'
-          : `h-full w-full transition duration-700 group-hover:scale-105 ${item.fit || 'object-cover'}`}
+        className={`absolute inset-0 h-full w-full object-cover ${large ? 'object-center' : `transition duration-700 group-hover:scale-105 ${item.fit || 'object-center'}`}`}
       />
       <span
         className={
           large
             ? 'pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink via-ink/80 to-transparent'
-            : 'pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent'
+            : 'pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-ink/80 to-transparent'
         }
       />
-      <span className={`absolute inset-x-0 bottom-0 text-paper drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] ${large ? 'p-6 md:p-10' : 'p-4'}`}>
-        <span className={`block ${large ? 'font-serif text-5xl leading-none md:text-7xl' : 'text-sm uppercase tracking-[0.16em]'}`}>{item.label}</span>
-        {large ? <span className="mt-3 block text-sm font-medium uppercase tracking-[0.22em]">Explore</span> : null}
+      <span className={`absolute inset-x-0 bottom-0 text-paper drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] ${large ? 'p-6 md:p-10' : 'p-4 md:p-5'}`}>
+        <span className={`block ${large ? 'font-serif text-5xl leading-none md:text-7xl' : 'font-serif text-2xl leading-none md:text-3xl'}`}>{item.label}</span>
+        {large ? (
+          <span className="mt-4 inline-block w-fit rounded-md bg-paper px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-ink">
+            Explore
+          </span>
+        ) : null}
       </span>
     </Link>
   )
@@ -274,19 +336,39 @@ const innovationSlugs = ['paddy-rice-waste', 'wheat-waste']
 export function MaterialInnovation() {
   const items = innovationSlugs.map((slug) => materials.find((item) => item.slug === slug)).filter(Boolean)
   return (
-    <section className="pb-12 md:pb-16">
+    <section className="border-t border-line py-12 md:py-20">
       <Container>
-        <SectionHeading eyebrow="Material innovation" title="Rice straw and wheat straw" href="/materials" action="All materials" />
-        <div className="grid gap-4 sm:grid-cols-2">
-          {items.map((material) => (
-            <Link key={material.slug} to={`/materials/${material.slug}`} className="group">
-              <div className="aspect-[3/4] overflow-hidden bg-paper-2">
-                <img src={material.image} alt="" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-              </div>
-              <h3 className="mt-3 font-serif text-2xl">{material.name}</h3>
-              <p className="text-sm text-leaf">{material.source}</p>
-            </Link>
-          ))}
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.18em] text-muted">The material</p>
+            <h2 className="mt-3 max-w-md font-serif text-4xl leading-[1.05] md:text-6xl">From a field in Sonbhadra.</h2>
+            <p className="mt-5 max-w-md text-base leading-relaxed">
+              After the crop is cut, rice straw and wheat straw are what remain. Rice straw is finished into leather. Wheat straw is finished into suede. The straw is named on the product.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+              <ButtonLink to="/our-story" variant="secondary">Read the story</ButtonLink>
+              <Link to="/materials" className="text-[11px] uppercase tracking-[0.16em] text-leaf underline underline-offset-4">
+                All materials
+              </Link>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {items.map((material) => (
+              <Link key={material.slug} to={`/materials/${material.slug}`} className="group">
+                <span className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-paper-2">
+                  <img
+                    src={material.image}
+                    alt=""
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 via-ink/45 to-transparent p-4 pt-16 text-paper md:p-5">
+                    <span className="block font-serif text-2xl leading-none">{material.name}</span>
+                    <span className="mt-2 block text-sm leading-snug text-paper/90">{material.story}</span>
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </Container>
     </section>
@@ -296,16 +378,37 @@ export function MaterialInnovation() {
 export function BrandStory() {
   const { story } = homeContent
   return (
-    <section className="border-t border-line py-12 md:py-16">
-      <Container className="grid gap-8 md:grid-cols-2 md:items-end">
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-muted">{story.eyebrow}</p>
-          <h2 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">{story.title}</h2>
+    <section className="grid bg-ink lg:grid-cols-2">
+      <img
+        src={story.image}
+        alt={story.alt}
+        className="h-[420px] w-full object-cover object-[center_18%] lg:h-auto lg:min-h-[640px]"
+      />
+      <div className="flex flex-col justify-center px-6 py-12 text-paper md:px-14 md:py-16 lg:px-16">
+        <p className="text-[11px] uppercase tracking-[0.22em] text-paper/70">{story.eyebrow}</p>
+        <h2 className="mt-4 max-w-lg font-serif text-4xl leading-[1.05] md:text-6xl">{story.title}</h2>
+        <p className="mt-5 max-w-md text-base leading-relaxed text-paper/90">{story.body}</p>
+        <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-paper/15 pt-8">
+          {homeContent.materialNotes.map((item) => {
+            const Icon = materialNoteIcons[item.icon]
+            return (
+              <div key={item.label} className="flex flex-col items-start">
+                <Icon size={22} strokeWidth={1.25} aria-hidden="true" />
+                <p className="mt-3 max-w-[12rem] text-[11px] uppercase tracking-[0.16em]">{item.label}</p>
+              </div>
+            )
+          })}
         </div>
-        <p className="max-w-md text-base leading-relaxed md:justify-self-end">{story.body}</p>
-      </Container>
+      </div>
     </section>
   )
+}
+
+const materialNoteIcons = {
+  sprout: Sprout,
+  wheat: Wheat,
+  tag: Tag,
+  bag: ShoppingBag,
 }
 
 export function NewsletterBand() {

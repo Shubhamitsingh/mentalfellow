@@ -33,6 +33,38 @@ export const homeContent = {
       alt: 'A man in a black sleeveless top and sunglasses standing outside',
     },
   ],
+  shopByMaterial: [
+    {
+      label: 'Rice Straw',
+      href: '/materials/paddy-rice-waste',
+      image: '/uploads/model15.jpg',
+      alt: 'A woman in a yellow cropped hoodie',
+    },
+    {
+      label: 'Wheat Straw',
+      href: '/materials/wheat-waste',
+      image: '/uploads/model14.png',
+      alt: 'A man in a black sleeveless top and sunglasses',
+    },
+    {
+      label: 'Banana Fibre',
+      href: '/materials/banana-fibre',
+      image: '/uploads/model9.png',
+      alt: 'A woman in a yellow top and pink sunglasses',
+    },
+    {
+      label: 'Pineapple Fibre',
+      href: '/materials/pineapple-fibre',
+      image: '/uploads/model5.png',
+      alt: 'A woman in yellow holding a blue bag',
+    },
+    {
+      label: 'Recycled Textile',
+      href: '/materials/recycled-textile',
+      image: '/uploads/model6.png',
+      alt: 'A person in a lime hood carrying a red bag',
+    },
+  ],
   departments: [
     {
       label: 'Bags',
@@ -69,8 +101,16 @@ export const homeContent = {
     alt: 'A sheet of rice-straw leather beside a bundle of rice straw',
   },
   story: {
-    eyebrow: 'The brand',
+    eyebrow: 'Our story',
     title: 'Carry it. Wear it. Use it.',
     body: 'We do not stop at a material sample. The work is to turn that material into a product someone actually wants: a sling for the train, a belt that fits, a shoe that can be worn in.',
+    image: '/uploads/model4.png',
+    alt: 'Two women in red, one in a black cap and one in sunglasses',
   },
+  materialNotes: [
+    { icon: 'sprout', label: 'Rice straw leather' },
+    { icon: 'wheat', label: 'Wheat straw suede' },
+    { icon: 'tag', label: 'Named on every piece' },
+    { icon: 'bag', label: 'Made to be used' },
+  ],
 }

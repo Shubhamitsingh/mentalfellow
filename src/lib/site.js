@@ -2,6 +2,7 @@ import { collections, menus } from '@/content/taxonomy'
 
 export const site = {
   name: 'Mental Fellow',
+  logo: '/uploads/logo/logo.png',
   tagline: 'Fashion, reimagined.',
   description:
     'Mental Fellow turns innovative materials, including agricultural-waste and recycled feedstocks, into bags, wallets, belts, footwear, and travel goods.',
