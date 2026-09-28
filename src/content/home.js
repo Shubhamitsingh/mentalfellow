@@ -3,35 +3,37 @@ import { photo } from '@/content/media'
 export const homeContent = {
   hero: {
     eyebrow: 'Mental Fellow',
-    title: 'Fashion,',
-    emphasis: 'reimagined.',
+    title: 'Not made',
+    emphasis: 'to fit in.',
     subtitle: 'Turning innovative materials into modern everyday essentials.',
     action: 'Shop the collection',
     slides: [
+      { src: '/uploads/model10.png', alt: 'A woman in a lime top and black jacket against a green wall', wide: true },
       { src: '/uploads/model1.png', alt: 'A woman in red holding a woven black shoulder bag' },
-      { src: '/uploads/model3.png', alt: 'A woman in red holding a woven black bag by the handle' },
-      { src: '/uploads/model5.jpg', alt: 'A woman in burgundy holding a black bag and a red bag' },
-      { src: '/uploads/model6.png', alt: 'Two women in red, one in a black cap and one in sunglasses' },
-      { src: '/uploads/model7.png', alt: 'A woman in yellow holding a blue bag with a chain strap' },
-      { src: '/uploads/model8.png', alt: 'A close-up of a yellow textured handbag' },
-      { src: '/uploads/model9.png', alt: 'A person in a lime hood and brown jacket carrying a red crossbody bag' },
-      { src: '/uploads/model10.png', alt: 'A woman in a yellow top and pink sunglasses against a red shutter' },
+      { src: '/uploads/model2.png', alt: 'A woman in red holding a woven black bag by the handle' },
+      { src: '/uploads/model4.png', alt: 'Two women in red, one in a black cap and one in sunglasses', wide: true },
+      { src: '/uploads/model5.png', alt: 'A woman in yellow holding a blue bag with a chain strap' },
+      { src: '/uploads/model9.png', alt: 'A woman in a yellow top and pink sunglasses against a red shutter' },
+      { src: '/uploads/model3.png', alt: 'A woman in a lime top tying the front against a green wall', wide: true },
+      { src: '/uploads/model6.png', alt: 'A person in a lime hood and brown jacket carrying a red crossbody bag' },
     ],
     href: '/shop',
   },
-  departments: [
+  doors: [
     {
       label: 'Shop women',
       href: '/women',
-      image: photo('photo-1590874103328-eac38a683ce7', 1200, 1500),
-      alt: 'A tote bag held at the side',
+      image: '/uploads/model15.jpg',
+      alt: 'A woman in a yellow cropped hoodie sitting in the sun',
     },
     {
       label: 'Shop men',
       href: '/men',
-      image: photo('photo-1553062407-98eeb64c6a62', 1200, 1500),
-      alt: 'A backpack against a plain wall',
+      image: '/uploads/model14.png',
+      alt: 'A man in a black sleeveless top and sunglasses standing outside',
     },
+  ],
+  departments: [
     {
       label: 'Bags',
       href: '/bags',

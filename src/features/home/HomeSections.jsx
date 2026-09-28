@@ -14,7 +14,15 @@ export function Hero() {
   const { hero } = homeContent
   const slides = hero.slides
   const pairList = []
-  for (let i = 0; i < slides.length; i += 2) pairList.push(slides.slice(i, i + 2))
+  for (let i = 0; i < slides.length; ) {
+    if (slides[i].wide) {
+      pairList.push([slides[i]])
+      i += 1
+    } else {
+      pairList.push(slides.slice(i, i + 2))
+      i += 2
+    }
+  }
   const count = pairList.length
   const track = count > 1 ? [...pairList, pairList[0]] : pairList
   const [index, setIndex] = useState(0)
@@ -84,24 +92,27 @@ export function Hero() {
                   key={slide.src}
                   src={slide.src}
                   alt={slide.alt}
-                  className={`h-full w-full object-cover object-[center_18%] ${pair.length === 1 ? 'md:col-span-2' : ''}`}
+                  className={`h-full w-full object-cover ${slide.wide ? 'object-center' : 'object-[center_18%]'} ${pair.length === 1 ? 'md:col-span-2' : ''}`}
                 />
               ))}
             </div>
           ))}
         </div>
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/25 to-transparent" />
-      <div className="relative z-10 flex h-full items-end">
-        <Container className="pb-16">
-          <div className="pl-10">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-paper/80">{hero.eyebrow}</p>
-            <h1 className="mt-2 max-w-xl font-serif text-5xl leading-[0.9] text-paper md:text-7xl">
-              {hero.title} <span className="italic">{hero.emphasis}</span>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(22,24,21,0.55),transparent_68%)]" />
+      <div className="relative z-10 flex h-full items-center">
+        <Container className="w-full">
+          <div className="mx-auto max-w-4xl px-14 text-center md:px-20">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-paper/80">{hero.eyebrow}</p>
+            <h1 className="mt-2 text-paper">
+              <span className="block font-sans text-5xl font-light uppercase tracking-[0.22em] md:text-7xl md:tracking-[0.28em]">
+                {hero.title}
+              </span>
+              <span className="mt-4 block whitespace-nowrap font-script text-[7rem] leading-none md:mt-6 md:text-[12rem]">{hero.emphasis}</span>
             </h1>
-            <p className="mt-4 max-w-md text-sm text-paper/90 md:text-base">{hero.subtitle}</p>
-            <div className="mt-8">
-              <ButtonLink to={hero.href}>{hero.action}</ButtonLink>
+            <p className="mx-auto mt-4 max-w-md text-sm text-paper/90 md:text-base">{hero.subtitle}</p>
+            <div className="mt-8 flex justify-center">
+              <ButtonLink to={hero.href} className="rounded-lg px-8">{hero.action}</ButtonLink>
             </div>
           </div>
         </Container>
@@ -152,12 +163,26 @@ export function TrustStrip() {
   )
 }
 
-export function HomeProducts({ products }) {
+export function ShopDoors() {
+  return (
+    <section className="py-4 md:py-6">
+      <Container className="max-w-[1680px] px-4 md:px-6">
+        <div className="grid gap-3 md:grid-cols-2">
+          {homeContent.doors.map((item) => (
+            <CategoryTile key={item.href} item={item} large className="aspect-[2/3] w-full bg-white" />
+          ))}
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+export function HomeProducts({ products, eyebrow, title, href }) {
   if (!products?.length) return null
   return (
     <section className="py-6 md:py-8">
       <Container className="max-w-[1680px] px-4 md:px-6">
-        <SectionHeading compact eyebrow="The line" title="All products" href="/shop" />
+        <SectionHeading compact eyebrow={eyebrow} title={title} href={href} />
         <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-4 lg:gap-y-8">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -183,12 +208,26 @@ export function CategoryGrid() {
   )
 }
 
-function CategoryTile({ item, className }) {
+function CategoryTile({ item, className, large = false }) {
   return (
     <Link to={item.href} className={`group relative block overflow-hidden bg-paper-2 ${className}`}>
-      <img src={item.image} alt={item.alt} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/60 to-transparent p-4 text-sm uppercase tracking-[0.16em] text-paper">
-        {item.label}
+      <img
+        src={item.image}
+        alt={item.alt}
+        className={large
+          ? 'absolute inset-0 h-full w-full object-cover object-center'
+          : `h-full w-full transition duration-700 group-hover:scale-105 ${item.fit || 'object-cover'}`}
+      />
+      <span
+        className={
+          large
+            ? 'pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink via-ink/80 to-transparent'
+            : 'pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent'
+        }
+      />
+      <span className={`absolute inset-x-0 bottom-0 text-paper drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] ${large ? 'p-6 md:p-10' : 'p-4'}`}>
+        <span className={`block ${large ? 'font-serif text-5xl leading-none md:text-7xl' : 'text-sm uppercase tracking-[0.16em]'}`}>{item.label}</span>
+        {large ? <span className="mt-3 block text-sm font-medium uppercase tracking-[0.22em]">Explore</span> : null}
       </span>
     </Link>
   )

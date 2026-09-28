@@ -41,7 +41,9 @@ export default function CatalogPage({ mode = 'shop', gender: genderProp, departm
   const [sortOpen, setSortOpen] = useState(false)
   const query = readCatalogQuery(params)
   const page = departmentPage(department)
-  const heading = headingFor(mode, slug, genderProp, page)
+  const heading = query.search
+    ? { title: 'Search', description: `Pieces matching “${query.search}”.` }
+    : headingFor(mode, slug, genderProp, page)
   const paramKey = params.toString()
   const hideFilters = [
     mode === 'gender' ? 'gender' : null,
@@ -62,6 +64,7 @@ export default function CatalogPage({ mode = 'shop', gender: genderProp, departm
         collection: mode === 'collection' ? slug : undefined,
         materialSlug: mode === 'material' ? slug : undefined,
         listing: mode === 'new' || mode === 'bestsellers' || mode === 'sale' ? mode : undefined,
+        search: query.search || undefined,
         hideFilters,
         pageSize: 8,
       }),

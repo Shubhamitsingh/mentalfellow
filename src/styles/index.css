@@ -3,6 +3,7 @@
 @theme {
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-script: "Allura", cursive;
 
   --color-paper: #f3f0ea;
   --color-paper-2: #e6e0d6;

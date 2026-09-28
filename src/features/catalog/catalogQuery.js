@@ -18,6 +18,7 @@ export function readCatalogQuery(params) {
 
   return {
     sort: params.get('sort') || 'recommended',
+    search: params.get('q') || '',
     multi: {
       gender: params.getAll('gender'),
       type: params.getAll('type'),

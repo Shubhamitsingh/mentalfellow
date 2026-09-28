@@ -37,7 +37,7 @@ export const primaryNav = [
 
 export { collections, menus }
 
-export const popularSearches = ['sling', 'tote', 'banana fibre', 'wallet', 'derby', 'travel']
+export const popularSearches = ['sling', 'wallet', 'belt', 'travel', 'derby', 'rice straw']
 
 export const footerColumns = [
   {
