@@ -3,7 +3,6 @@ export const homeContent = {
     eyebrow: 'Mental Fellow',
     title: 'Not made',
     emphasis: 'to fit in.',
-    subtitle: 'Turning innovative materials into modern everyday essentials.',
     action: 'Shop the collection',
     slides: [
       { src: '/uploads/model10.png', alt: 'A woman in a lime top and black jacket against a green wall', wide: true },

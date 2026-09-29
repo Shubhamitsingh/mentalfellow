@@ -111,7 +111,6 @@ export function Hero() {
               </span>
               <span className="mt-[10px] block whitespace-nowrap font-script text-[7rem] leading-none md:mt-[18px] md:text-[12rem]">{hero.emphasis}</span>
             </h1>
-            <p className="mx-auto mt-4 max-w-md text-sm text-paper/90 md:text-base">{hero.subtitle}</p>
             <div className="mt-8 flex justify-center">
               <ButtonLink to={hero.href} className="rounded-lg px-8">{hero.action}</ButtonLink>
             </div>
@@ -308,7 +307,7 @@ function CategoryTile({ item, className, large = false }) {
 export function EditorialBanner() {
   const { materialStory: editorial } = homeContent
   return (
-    <section className="relative min-h-[280px] bg-ink md:min-h-[340px]">
+    <section className="relative mb-6 min-h-[280px] bg-ink md:mb-8 md:min-h-[340px]">
       <img src={editorial.image} alt={editorial.alt} className="absolute inset-0 h-full w-full object-cover opacity-80" />
       <div className="absolute inset-0 bg-ink/35" />
       <Container className="relative flex min-h-[280px] flex-col justify-end py-8 text-paper md:min-h-[340px]">
