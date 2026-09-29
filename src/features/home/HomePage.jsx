@@ -3,6 +3,7 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { ProductGridSkeleton } from '@/components/ui/LoadingState'
 import {
   BrandStory,
+  DiscoverBanner,
   EditorialBanner,
   Hero,
   HomeProducts,
@@ -43,6 +44,7 @@ export default function HomePage() {
             href="/new-arrivals"
             products={state.data.products.filter((product) => product.flags.new).slice(0, 5)}
           />
+          <DiscoverBanner />
           <HomeProducts
             title="Bestsellers"
             href="/bestsellers"

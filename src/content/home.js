@@ -56,6 +56,19 @@ export const homeContent = {
       alt: 'A woman in yellow holding a blue bag',
     },
   ],
+  discover: {
+    title: 'Discover',
+    action: 'Shop new',
+    href: '/new-arrivals',
+    slides: [
+      { src: '/uploads/model16.jpg', alt: 'A woman in an orange suit holding her blazer open' },
+      { src: '/uploads/model10.png', alt: 'A woman in a lime top and black jacket against a green wall' },
+      { src: '/uploads/model15.jpg', alt: 'A woman in a yellow cropped hoodie sitting in the sun' },
+      { src: '/uploads/model14.png', alt: 'A man in a black sleeveless top and sunglasses standing outside' },
+      { src: '/uploads/model9.png', alt: 'A woman in a yellow top and pink sunglasses against a red shutter' },
+      { src: '/uploads/model6.png', alt: 'A person in a lime hood and brown jacket carrying a red crossbody bag' },
+    ],
+  },
   materialStory: {
     eyebrow: 'Material',
     title: 'Rice straw, made into leather.',
