@@ -43,6 +43,12 @@ export function Navbar() {
           })}
         </nav>
         <div className="ml-auto flex shrink-0 items-center gap-1">
+          <Link
+            to="/creators"
+            className={`mr-1 hidden text-[11px] uppercase tracking-[0.12em] sm:inline xl:hidden ${pathname.startsWith('/creators') ? 'text-ink' : 'text-ink/70'}`}
+          >
+            Creators
+          </Link>
           <button
             type="button"
             onClick={ui.openSearch}
@@ -92,5 +98,6 @@ function Count({ value }) {
 function isActive(item, pathname) {
   if (item.id === 'collections') return pathname.startsWith('/collections')
   if (item.id === 'blog') return pathname === '/blog' || pathname.startsWith('/blog/')
+  if (item.id === 'creators') return pathname === '/creators' || pathname.startsWith('/creators/')
   return pathname === item.href
 }

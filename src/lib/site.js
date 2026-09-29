@@ -35,6 +35,7 @@ export const primaryNav = [
   { id: 'travel', label: 'Travel', href: '/travel', menu: 'travel' },
   { id: 'collections', label: 'Collections', href: '/collections', menu: 'collections' },
   { id: 'blog', label: 'Blog', href: '/blog' },
+  { id: 'creators', label: 'Creators', href: '/creators' },
 ]
 
 export { collections, menus }
@@ -82,6 +83,7 @@ export const footerColumns = [
       { label: 'About', href: '/about' },
       { label: 'Our Story', href: '/our-story' },
       { label: 'Blog', href: '/blog' },
+      { label: 'Creators', href: '/creators' },
       { label: 'Careers', href: '/careers' },
       { label: 'Privacy', href: '/privacy' },
       { label: 'Terms', href: '/terms' },

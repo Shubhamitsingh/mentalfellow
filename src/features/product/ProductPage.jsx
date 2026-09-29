@@ -9,6 +9,7 @@ import { RatingStars } from '@/components/ui/RatingStars'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { ProductGallery } from '@/features/product/ProductGallery'
+import { CreatorOpportunity } from '@/features/creators/CreatorOpportunity'
 import { ProductPurchase } from '@/features/product/ProductPurchase'
 import { useAsync } from '@/hooks/useAsync'
 import { usePageMeta } from '@/hooks/usePageMeta'
@@ -123,7 +124,10 @@ function ProductStage({ product }) {
       <div className="min-w-0 lg:sticky lg:top-24">
         <ProductGallery key={color} images={colorImages(product, color)} alt={selected?.alt || product.name} />
       </div>
-      <ProductPurchase product={product} color={color} onColorChange={setColor} />
+      <div>
+        <ProductPurchase product={product} color={color} onColorChange={setColor} />
+        <CreatorOpportunity product={product} />
+      </div>
     </div>
   )
 }

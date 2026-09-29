@@ -12,7 +12,7 @@ export function Input({ label, hint, error, id, className, ...props }) {
       <input
         id={inputId}
         className={cn(
-          'h-12 w-full border border-line bg-white px-3 text-sm outline-none placeholder:text-muted focus:border-leaf',
+          'h-12 w-full rounded-lg border border-line bg-white px-3 text-sm outline-none placeholder:text-muted focus:border-leaf',
           error && 'border-sale',
           className,
         )}
@@ -35,7 +35,7 @@ export function Textarea({ label, id, className, ...props }) {
       ) : null}
       <textarea
         id={inputId}
-        className={cn('min-h-32 w-full border border-line bg-white px-3 py-3 text-sm outline-none focus:border-leaf', className)}
+        className={cn('min-h-32 w-full rounded-lg border border-line bg-white px-3 py-3 text-sm outline-none focus:border-leaf', className)}
         {...props}
       />
     </div>

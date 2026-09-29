@@ -306,68 +306,17 @@ function CategoryTile({ item, className, large = false }) {
 
 export function DiscoverBanner() {
   const { discover } = homeContent
-  const slides = discover.slides
-  const [index, setIndex] = useState(0)
-
-  useEffect(() => {
-    if (slides.length < 2) return undefined
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
-    const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % slides.length)
-    }, 4500)
-    return () => window.clearInterval(timer)
-  }, [slides.length])
-
-  function go(step) {
-    setIndex((current) => (current + step + slides.length) % slides.length)
-  }
-
   return (
-    <section className="w-full pb-6 md:pb-8" aria-roledescription="carousel" aria-label={discover.title}>
+    <section className="w-full pb-6 md:pb-8" aria-label={discover.title}>
       <div className="relative min-h-[560px] overflow-hidden bg-ink md:min-h-[720px]">
-        {slides.map((slide, slideIndex) => (
-          <img
-            key={slide.src}
-            src={slide.src}
-            alt={slideIndex === index ? slide.alt : ''}
-            className={`absolute inset-0 h-full w-full object-cover object-[center_18%] transition-opacity duration-700 ${slideIndex === index ? 'opacity-100' : 'opacity-0'}`}
-          />
-        ))}
+        <img src={discover.image} alt={discover.alt} className="absolute inset-0 h-full w-full object-cover object-[center_18%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-ink/20" />
         <div className="relative flex min-h-[560px] flex-col items-center justify-end px-6 pb-10 text-center text-paper md:min-h-[720px] md:pb-14">
           <h2 className="font-sans text-4xl font-medium uppercase tracking-[0.18em] md:text-6xl">{discover.title}</h2>
           <ButtonLink to={discover.href} variant="inverse" className="mt-6 rounded-full px-8">
             {discover.action}
           </ButtonLink>
-          <div className="mt-6 flex gap-2">
-            {slides.map((slide, slideIndex) => (
-              <button
-                key={slide.src}
-                type="button"
-                aria-label={`Go to photo ${slideIndex + 1}`}
-                aria-current={slideIndex === index ? 'true' : undefined}
-                className={`h-2 rounded-full ${slideIndex === index ? 'w-6 bg-paper' : 'w-2 bg-paper/50'}`}
-                onClick={() => setIndex(slideIndex)}
-              />
-            ))}
-          </div>
         </div>
-        <button
-          type="button"
-          className="absolute top-1/2 left-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper/90 text-ink"
-          aria-label="Previous photo"
-          onClick={() => go(-1)}
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <button
-          type="button"
-          className="absolute top-1/2 right-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper/90 text-ink"
-          aria-label="Next photo"
-          onClick={() => go(1)}
-        >
-          <ChevronRight size={18} />
-        </button>
       </div>
     </section>
   )

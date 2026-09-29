@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from '@/components/ui/Container'
-import { ButtonLink } from '@/components/ui/Button'
+import { Button, ButtonLink } from '@/components/ui/Button'
 import { useCart } from '@/contexts/CartContext'
+import { useCreator } from '@/contexts/CreatorContext'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { formatMoney } from '@/utils/format'
 import { estimateShipping } from '@/services/shipping'
@@ -10,6 +12,8 @@ const steps = ['Account', 'Address', 'Delivery', 'Payment', 'Confirmation']
 
 export default function CheckoutPage() {
   const cart = useCart()
+  const creator = useCreator()
+  const [recorded, setRecorded] = useState('')
   usePageMeta({ title: 'Checkout', description: 'Secure checkout at Mental Fellow.', path: '/checkout' })
   const shipping = estimateShipping(cart.subtotal)
   const total = Math.max(0, cart.subtotal - (cart.coupon?.discount || 0)) + shipping
@@ -33,6 +37,21 @@ export default function CheckoutPage() {
           <ButtonLink to="/cart" variant="secondary" className="mt-8">
             Back to bag
           </ButtonLink>
+          {creator.profile?.status === 'approved' && cart.lines.length > 0 ? (
+            <div className="mt-8 border border-line bg-white p-4">
+              <p className="text-sm leading-relaxed">You are an approved creator. Recording this bag adds it to your cashback list. It does not charge a card or create a store order.</p>
+              <Button
+                className="mt-4"
+                onClick={() => {
+                  const result = creator.recordBag(cart.lines)
+                  setRecorded(result.ok ? `${result.id} is on your cashback list.` : result.message)
+                }}
+              >
+                Record bag for cashback
+              </Button>
+              {recorded ? <p className="mt-2 text-xs text-muted">{recorded}</p> : null}
+            </div>
+          ) : null}
         </div>
         <aside className="border border-line p-5">
           <h2 className="text-[11px] uppercase tracking-[0.16em]">Bag</h2>

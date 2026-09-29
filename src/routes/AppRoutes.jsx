@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { StorefrontLayout } from '@/components/layout/StorefrontLayout'
 import { LoadingState } from '@/components/ui/LoadingState'
 
@@ -21,6 +21,10 @@ const MaterialsPage = lazy(() => import('@/features/materials/MaterialsPage'))
 const SustainabilityPage = lazy(() => import('@/features/content/SustainabilityPage'))
 const BlogPage = lazy(() => import('@/features/content/BlogPage'))
 const BlogPostPage = lazy(() => import('@/features/content/BlogPage').then((module) => ({ default: module.BlogPostPage })))
+const CreatorMarketPage = lazy(() => import('@/features/creators/CreatorPages').then((module) => ({ default: module.CreatorMarketPage })))
+const CreatorJoinPage = lazy(() => import('@/features/creators/CreatorPages').then((module) => ({ default: module.CreatorJoinPage })))
+const CreatorDeskPage = lazy(() => import('@/features/creators/CreatorPages').then((module) => ({ default: module.CreatorDeskPage })))
+const AdminCashbackPage = lazy(() => import('@/features/creators/CreatorPages').then((module) => ({ default: module.AdminCashbackPage })))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 export function AppRoutes() {
@@ -58,6 +62,11 @@ export function AppRoutes() {
           <Route path="size-guide" element={<SizeGuidePage />} />
           <Route path="track-order" element={<TrackOrderPage />} />
           <Route path="offers" element={<OffersPage />} />
+          <Route path="creators" element={<CreatorMarketPage />} />
+          <Route path="creators/join" element={<CreatorJoinPage />} />
+          <Route path="creators/desk" element={<CreatorDeskPage />} />
+          <Route path="creators/admin" element={<AdminCashbackPage />} />
+          <Route path="creators/studio" element={<Navigate to="/creators/admin" replace />} />
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog/:slug" element={<BlogPostPage />} />
           <Route path="about" element={<ContentPage slug="about" />} />
