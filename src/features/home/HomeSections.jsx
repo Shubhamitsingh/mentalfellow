@@ -111,7 +111,7 @@ export function Hero() {
               </span>
               <span className="mt-[10px] block whitespace-nowrap font-script text-[7rem] leading-none md:mt-[18px] md:text-[12rem]">{hero.emphasis}</span>
             </h1>
-            <div className="mt-8 flex justify-center">
+            <div className="mt-24 flex justify-center md:mt-28">
               <ButtonLink to={hero.href} className="rounded-lg px-8">{hero.action}</ButtonLink>
             </div>
           </div>
