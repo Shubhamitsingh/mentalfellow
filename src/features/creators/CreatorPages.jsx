@@ -46,7 +46,7 @@ export function CreatorMarketPage() {
     <>
       <section className="bg-paper">
         <div className="mx-auto max-w-[1440px] px-5 py-8 md:px-10 md:py-10">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-leaf">Creator cashback</p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[#0e9b00]">Creator cashback</p>
           <h1 className="mt-3 max-w-4xl font-sans text-4xl font-medium uppercase leading-tight tracking-[0.12em] md:text-5xl md:tracking-[0.16em]">Buy it. Post it. Get it back.</h1>
           <div className="mt-6 flex gap-3 overflow-x-auto overscroll-x-contain md:mt-8 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible">
             {heroShots.map((shot) => (
@@ -62,10 +62,10 @@ export function CreatorMarketPage() {
             Shop like everyone else. After delivery, post the piece. An admin checks the reel, then cashback can be yours.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-3">
-            <ButtonLink to={approved ? '/creators/desk' : '/creators/join'} className="rounded-lg">
+            <ButtonLink to={approved ? '/creators/desk' : '/creators/join'} variant="green" className="rounded-lg">
               {approved ? 'My cashback' : 'Become a creator'}
             </ButtonLink>
-            <ButtonLink to="/shop" variant="secondary" className="rounded-lg">
+            <ButtonLink to="/shop" variant="yellow" className="rounded-lg">
               Shop products
             </ButtonLink>
           </div>
@@ -84,7 +84,7 @@ export function CreatorMarketPage() {
                 <img src={beat.image} alt={beat.alt} className="absolute inset-0 h-full w-full object-cover object-[center_18%]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
                 <div className="relative flex h-full min-h-[420px] flex-col justify-end p-5 text-paper md:min-h-[520px] md:p-6">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-straw">0{index + 1}</p>
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-[#ffd500]">0{index + 1}</p>
                   <h3 className="mt-2 font-serif text-4xl">{beat.title}</h3>
                   <p className="mt-2 max-w-xs text-sm leading-relaxed text-paper/85">{beat.body}</p>
                 </div>

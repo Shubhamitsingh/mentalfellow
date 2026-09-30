@@ -9,8 +9,8 @@ import {
   HomeProducts,
   CustomerNotes,
   ShopByMaterial,
+  SaleClock,
   ShopDoors,
-  TrustStrip,
 } from '@/features/home/HomeSections'
 import { useAsync } from '@/hooks/useAsync'
 import { usePageMeta } from '@/hooks/usePageMeta'
@@ -24,7 +24,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <TrustStrip />
+      <SaleClock />
       <ShopDoors />
       <ShopByMaterial />
       {state.status === 'loading' ? (

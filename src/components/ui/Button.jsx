@@ -6,6 +6,8 @@ const variants = {
   secondary: 'border border-leaf bg-transparent text-leaf hover:bg-leaf hover:text-paper',
   ghost: 'bg-transparent text-ink hover:bg-paper-2',
   inverse: 'bg-paper text-ink hover:bg-white',
+  green: 'bg-[#0e9b00] text-white hover:bg-[#0c8500]',
+  yellow: 'border-0 bg-[#ffd500] text-ink hover:bg-[#f0c800]',
 }
 
 const sizes = {

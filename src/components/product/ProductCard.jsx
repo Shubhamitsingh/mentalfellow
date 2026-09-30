@@ -35,6 +35,13 @@ export function ProductCard({ product }) {
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
           />
         </Link>
+        {images[1] && images[1] !== images[0] ? (
+          <img
+            src={images[1]}
+            alt=""
+            className="pointer-events-none absolute right-3 bottom-14 z-10 h-14 w-14 rounded-lg border-2 border-white object-cover shadow-sm md:group-hover:opacity-0"
+          />
+        ) : null}
         <WishlistButton product={product} className="absolute top-3 right-3 z-10 h-9 w-9 rounded-full bg-white text-leaf shadow-sm" />
         <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
           {product.badges.map((badge) => (

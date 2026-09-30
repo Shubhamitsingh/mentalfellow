@@ -13,7 +13,7 @@ import { collectionBySlug, materialBySlug, productTypeById } from '@/content/tax
 import { site } from '@/lib/site'
 import { offerCodes } from '@/content/offers'
 import { listOffers } from '@/services/coupons'
-import { checkPincode } from '@/services/shipping'
+import { checkPincode, readDeliveryPin, saveDeliveryPin } from '@/services/shipping'
 import { sizeCharts } from '@/content/sizeCharts'
 import { findVariant, sizesForColor } from '@/utils/variants'
 import { discountPercent, formatMoney } from '@/utils/format'
@@ -26,8 +26,8 @@ export function ProductPurchase({ product, mode = 'full', color: colorProp, onCo
   const [qty, setQty] = useState(1)
   const [error, setError] = useState('')
   const [chartOpen, setChartOpen] = useState(false)
-  const [pin, setPin] = useState('')
-  const [pinResult, setPinResult] = useState(null)
+  const [pin, setPin] = useState(() => readDeliveryPin()?.pincode || '')
+  const [pinResult, setPinResult] = useState(() => readDeliveryPin())
   const [copied, setCopied] = useState('')
   const cart = useCart()
   const ui = useUi()
@@ -224,7 +224,9 @@ export function ProductPurchase({ product, mode = 'full', color: colorProp, onCo
             className="mt-6"
             onSubmit={(event) => {
               event.preventDefault()
-              setPinResult(checkPincode(pin))
+              const result = checkPincode(pin)
+              setPinResult(result)
+              if (result.ok) saveDeliveryPin(result)
             }}
           >
             <label htmlFor="pincode" className="text-sm font-medium">Check delivery</label>

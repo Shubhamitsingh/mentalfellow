@@ -16,7 +16,7 @@ export function Hero() {
   const slides = hero.slides
   const pairList = []
   for (let i = 0; i < slides.length; ) {
-    if (slides[i].wide) {
+    if (slides[i].wide || !slides[i + 1] || slides[i + 1].wide) {
       pairList.push([slides[i]])
       i += 1
     } else {
@@ -100,38 +100,22 @@ export function Hero() {
           ))}
         </div>
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(22,24,21,0.55),transparent_68%)]" />
-      <div className="relative z-10 flex h-full items-center">
-        <Container className="w-full">
-          <div className="mx-auto max-w-4xl px-14 text-center md:px-20">
-            <p className="text-[11px] uppercase tracking-[0.28em] text-paper/80">{hero.eyebrow}</p>
-            <h1 className="mt-2 text-paper">
-              <span className="block whitespace-nowrap font-sans text-[clamp(1.55rem,9vw,3rem)] font-light uppercase tracking-[0.08em] sm:tracking-[0.16em] md:text-7xl md:tracking-[0.28em]">
-                {hero.title}
-              </span>
-              <span className="mt-[10px] block whitespace-nowrap font-script text-[7rem] leading-none md:mt-[18px] md:text-[12rem]">{hero.emphasis}</span>
-            </h1>
-            <div className="mt-24 flex justify-center md:mt-28">
-              <ButtonLink to={hero.href} className="rounded-lg px-8">{hero.action}</ButtonLink>
-            </div>
-          </div>
-        </Container>
-      </div>
+      <h1 className="sr-only">{hero.title} {hero.emphasis}</h1>
       <button
         type="button"
-        className="absolute top-1/2 left-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper/90 text-ink"
+        className="absolute top-1/2 left-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center text-ink drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]"
         aria-label="Previous slide"
         onClick={() => go(-1)}
       >
-        <ChevronLeft size={18} />
+        <ChevronLeft size={26} strokeWidth={2.25} />
       </button>
       <button
         type="button"
-        className="absolute top-1/2 right-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-paper/90 text-ink"
+        className="absolute top-1/2 right-3 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center text-ink drop-shadow-[0_0_2px_rgba(255,255,255,0.9)]"
         aria-label="Next slide"
         onClick={() => go(1)}
       >
-        <ChevronRight size={18} />
+        <ChevronRight size={26} strokeWidth={2.25} />
       </button>
       <div className="absolute inset-x-0 bottom-5 z-20 flex justify-center gap-2">
         {pairList.map((pair, slideIndex) => (
@@ -152,14 +136,64 @@ export function Hero() {
   )
 }
 
-export function TrustStrip() {
-  const items = ['Material named on every product', 'Free shipping above ₹999', '7-day exchange']
+function useCountdown(endsAt) {
+  const end = Date.parse(endsAt)
+  const [now, setNow] = useState(() => Date.now())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const remaining = Number.isNaN(end) ? 0 : Math.max(0, end - now)
+  const total = Math.floor(remaining / 1000)
+  return {
+    hours: Math.floor(total / 3600),
+    mins: Math.floor((total % 3600) / 60),
+    secs: total % 60,
+    done: remaining <= 0,
+  }
+}
+
+function pad(value) {
+  return String(value).padStart(2, '0')
+}
+
+export function SaleClock() {
+  const { sale } = homeContent
+  const left = useCountdown(sale.endsAt)
+  const label = left.done
+    ? 'Shop the sale'
+    : `Sale ends in ${left.hours} hours, ${left.mins} minutes, ${left.secs} seconds. Shop the sale.`
+
   return (
-    <Container className="grid gap-2 border-b border-line py-3 text-[11px] uppercase tracking-[0.16em] text-muted sm:grid-cols-3">
-      {items.map((item) => (
-        <p key={item}>{item}</p>
-      ))}
-    </Container>
+    <Link
+      to={sale.href}
+      aria-label={label}
+      className="block bg-white px-4 py-5 text-center text-ink"
+    >
+      <p className="text-[13px] font-semibold tracking-[0.22em]">SALE ENDS IN</p>
+      {left.done ? (
+        <p className="mt-3 text-sm">This window has closed. The sale page is still open.</p>
+      ) : (
+        <div className="mt-3 flex items-center justify-center gap-2 sm:gap-3">
+          <TimeBox value={pad(left.hours)} unit="Hours" />
+          <span aria-hidden="true" className="text-xl leading-none text-ink">’</span>
+          <TimeBox value={pad(left.mins)} unit="Mins" />
+          <span aria-hidden="true" className="text-xl leading-none text-ink">’</span>
+          <TimeBox value={pad(left.secs)} unit="Secs" />
+        </div>
+      )}
+    </Link>
+  )
+}
+
+function TimeBox({ value, unit }) {
+  return (
+    <span className="flex h-[4.75rem] w-[5.25rem] flex-col items-center justify-center rounded-[1.15rem] bg-[#ffd500] leading-none sm:h-[5.25rem] sm:w-[5.75rem]">
+      <span className="text-[1.65rem] font-semibold tabular-nums tracking-tight sm:text-3xl">{value}</span>
+      <span className="mt-1 text-[11px] text-ink/80">{unit}</span>
+    </span>
   )
 }
 
@@ -253,7 +287,7 @@ export function CustomerNotes() {
         {notes.map((note, index) => (
           <article key={note.id} className={`w-[calc(100%-1.5rem)] shrink-0 overflow-hidden rounded-2xl border border-line bg-white sm:w-[300px] ${index === notes.length - 1 ? 'snap-end' : 'snap-start'}`}>
               <Link to={`/product/${note.product.slug}`} className="block">
-                <img src={note.image} alt={note.imageAlt} className="aspect-[3/4] w-full object-cover object-[center_18%]" />
+                <img src={note.image} alt={note.imageAlt} className="h-96 w-full object-cover object-[center_20%] sm:h-[26rem]" />
               </Link>
               <div className="p-4">
                 <div className="flex items-center justify-between gap-3">

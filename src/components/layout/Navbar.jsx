@@ -17,13 +17,13 @@ export function Navbar() {
   const [openMenu, setOpenMenu] = useState(null)
 
   return (
-    <header className="relative border-b border-line bg-paper" onMouseLeave={() => setOpenMenu(null)}>
-      <div className="mx-auto flex h-[4.5rem] max-w-[1600px] items-center gap-3 px-4 md:h-20 md:px-8 lg:px-10">
+    <header className="relative bg-paper" onMouseLeave={() => setOpenMenu(null)}>
+      <div className="mx-auto flex h-14 max-w-[1600px] items-center gap-0 pl-0 pr-0 md:h-20 md:gap-3 md:px-8 lg:px-10">
         <IconButton label="Open menu" className="xl:hidden" onClick={ui.openMenu}>
           <Menu size={20} />
         </IconButton>
         <Link to="/" className="flex shrink-0 items-center" aria-label={site.name}>
-          <img src={site.logo} alt="" className="h-11 w-auto object-contain md:h-14" />
+          <img src={site.logo} alt="" className="h-9 w-auto object-contain md:h-14" />
         </Link>
         <nav className="ml-6 hidden min-w-0 items-center gap-x-3 xl:flex min-[1440px]:ml-8 min-[1440px]:gap-x-5" aria-label="Primary">
           {primaryNav.map((item) => {
@@ -64,19 +64,19 @@ export function Navbar() {
             <Heart size={20} />
             {wishlist.count > 0 ? <Count value={wishlist.count} /> : null}
           </Link>
-          <button type="button" className="grid h-11 w-11 place-items-center" aria-label="Account" onClick={ui.openLogin}>
-            <User size={20} />
-          </button>
           {cart.count > 0 ? (
-            <IconButton label={`Bag, ${cart.count} ${cart.count === 1 ? 'item' : 'items'}`} onClick={ui.openCart}>
+            <IconButton label={`Bag, ${cart.count} ${cart.count === 1 ? 'item' : 'items'}`} className="xl:order-2" onClick={ui.openCart}>
               <ShoppingBag size={20} />
               <Count value={cart.count} />
             </IconButton>
           ) : (
-            <Link to="/cart" className="relative grid h-11 w-11 place-items-center" aria-label="Bag, 0 items">
+            <Link to="/cart" className="relative grid h-11 w-11 place-items-center xl:order-2" aria-label="Bag, 0 items">
               <ShoppingBag size={20} />
             </Link>
           )}
+          <button type="button" className="hidden h-11 w-11 place-items-center xl:order-1 xl:grid" aria-label="Account" onClick={ui.openLogin}>
+            <User size={20} />
+          </button>
         </div>
       </div>
       {openMenu === 'collections' ? <CollectionMenu collections={collections} onNavigate={() => setOpenMenu(null)} /> : null}
@@ -89,7 +89,7 @@ export function Navbar() {
 
 function Count({ value }) {
   return (
-    <span className="absolute top-1 right-1 grid h-4 min-w-4 place-items-center bg-ink px-1 text-[10px] text-paper">
+    <span className="absolute top-1 right-1 grid h-4 min-w-4 place-items-center rounded-full bg-ink px-1 text-[10px] leading-none text-paper">
       {value}
     </span>
   )

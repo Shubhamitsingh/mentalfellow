@@ -5,16 +5,20 @@ export const homeContent = {
     emphasis: 'to fit in.',
     action: 'Shop the collection',
     slides: [
+      { src: '/uploads/model23.png', alt: 'A woman in a black ribbed crop top and jeans, with the words New Looks on a yellow and lilac background', wide: true },
+      { src: '/uploads/model22.png', alt: 'A woman in a yellow cropped hoodie and black track pants, with the words Stay Real across the photo', wide: true },
       { src: '/uploads/model10.png', alt: 'A woman in a lime top and black jacket against a green wall', wide: true },
-      { src: '/uploads/model1.png', alt: 'A woman in red holding a woven black shoulder bag' },
+      { src: '/uploads/model24.png', alt: 'A woman in a red turtleneck and sunglasses holding a black woven bag' },
       { src: '/uploads/model2.png', alt: 'A woman in red holding a woven black bag by the handle' },
-      { src: '/uploads/model4.png', alt: 'Two women in red, one in a black cap and one in sunglasses', wide: true },
       { src: '/uploads/model5.png', alt: 'A woman in yellow holding a blue bag with a chain strap' },
-      { src: '/uploads/model9.png', alt: 'A woman in a yellow top and pink sunglasses against a red shutter' },
-      { src: '/uploads/model3.png', alt: 'A woman in a lime top tying the front against a green wall', wide: true },
+      { src: '/uploads/model9.png', alt: 'A woman in a yellow top and pink sunglasses against a red shutter', wide: true },
       { src: '/uploads/model6.png', alt: 'A person in a lime hood and brown jacket carrying a red crossbody bag' },
     ],
     href: '/shop',
+  },
+  sale: {
+    endsAt: '2026-10-04T18:29:59.000Z',
+    href: '/sale',
   },
   doors: [
     {

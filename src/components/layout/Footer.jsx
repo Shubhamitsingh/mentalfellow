@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Container } from '@/components/ui/Container'
 import { footerColumns, site } from '@/lib/site'
-import { NewsletterForm } from '@/features/home/NewsletterForm'
 
 function SocialIcon({ label }) {
   if (label === 'Instagram') {
@@ -27,13 +26,48 @@ function SocialIcon({ label }) {
   )
 }
 
+function LinkLine({ links, external = false }) {
+  return (
+    <p className="mt-2 text-[15px] leading-7 text-ink/80">
+      {links.map((link, index) => (
+        <span key={link.label}>
+          <span className="whitespace-nowrap">
+            {external ? (
+              <a href={link.href} target="_blank" rel="noreferrer" className="text-ink hover:underline">
+                {link.label}
+              </a>
+            ) : (
+              <Link to={link.href} className="text-ink hover:underline">
+                {link.label}
+              </Link>
+            )}
+            {index < links.length - 1 ? <span className="text-fog"> |</span> : null}
+          </span>
+          {index < links.length - 1 ? ' ' : null}
+        </span>
+      ))}
+    </p>
+  )
+}
+
 export function Footer() {
   return (
     <footer className="border-t border-line bg-paper text-ink">
-      <Container className="border-b border-line py-10 md:py-14">
-        <NewsletterForm layout="split" />
+      <Container className="py-10 md:hidden">
+        <div className="space-y-8">
+          {footerColumns.map((column) => (
+            <div key={column.title}>
+              <p className="text-base font-semibold text-ink">{column.title}</p>
+              <LinkLine links={column.links} />
+            </div>
+          ))}
+          <div>
+            <p className="text-base font-semibold text-ink">Social</p>
+            <LinkLine links={site.socials} external />
+          </div>
+        </div>
       </Container>
-      <Container className="grid gap-12 py-12 md:grid-cols-[minmax(0,16rem)_1fr] md:py-16 lg:gap-20">
+      <Container className="hidden gap-12 py-16 md:grid md:grid-cols-[minmax(0,16rem)_1fr] lg:gap-20">
         <div>
           <Link to="/" className="inline-block" aria-label={site.name}>
             <img src={site.logo} alt="" className="h-14 w-auto" />
@@ -57,7 +91,7 @@ export function Footer() {
             ))}
           </ul>
         </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
+        <div className="grid grid-cols-4 gap-x-6 gap-y-10">
           {footerColumns.map((column) => (
             <div key={column.title}>
               <p className="text-[11px] uppercase tracking-[0.18em] text-muted">{column.title}</p>
@@ -74,7 +108,7 @@ export function Footer() {
           ))}
         </div>
       </Container>
-      <Container className="border-t border-line py-6 text-xs text-muted">
+      <Container className="border-t border-line py-6 text-sm text-muted">
         <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
       </Container>
     </footer>

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
 import { CartDrawer } from '@/components/layout/CartDrawer'
 import { Footer } from '@/components/layout/Footer'
+import { InviteBanner } from '@/components/layout/InviteBanner'
 import { MobileMenu } from '@/components/layout/MobileMenu'
 import { Navbar } from '@/components/layout/Navbar'
 import { SearchModal } from '@/components/layout/SearchModal'
@@ -35,6 +36,7 @@ export function StorefrontLayout() {
       <main id="main" className="flex-1">
         <Outlet />
       </main>
+      <InviteBanner />
       <Footer />
       <SearchModal open={ui.searchOpen} onClose={ui.close} />
       <CartDrawer open={ui.cartOpen} onClose={ui.close} />

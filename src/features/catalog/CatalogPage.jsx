@@ -123,6 +123,8 @@ export default function CatalogPage({ mode = 'shop', gender: genderProp, departm
         </div>
       </div>
 
+      {mode === 'shop' || mode === 'department' ? <DepartmentTiles pathname={pathname} /> : null}
+
       <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
         {collectionChips.map((chip) => {
           const active = pathname === chip.href
@@ -216,6 +218,32 @@ export default function CatalogPage({ mode = 'shop', gender: genderProp, departm
         </ul>
       </Drawer>
     </Container>
+  )
+}
+
+const departmentTiles = [
+  { label: 'Bags', href: '/bags', image: '/uploads/model21.png', alt: 'A woman in a yellow top holding a blue chain-strap bag' },
+  { label: 'Wallets', href: '/wallets', image: '/products/rice-leather-wallet-ink.png', alt: 'Black rice-straw leather card wallet' },
+  { label: 'Belts', href: '/belts', image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&h=1000&q=75', alt: 'Black belt strap in even light' },
+  { label: 'Footwear', href: '/footwear', image: 'https://images.unsplash.com/photo-1533867617858-e7b97e060509?auto=format&fit=crop&w=800&h=1000&q=75', alt: 'Black derby shoes' },
+  { label: 'Travel', href: '/travel', image: '/products/wheat-suede-organizer.png', alt: 'Wheat-straw suede packing cubes' },
+]
+
+function DepartmentTiles({ pathname }) {
+  return (
+    <nav aria-label="Departments" className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      {departmentTiles.map((item) => {
+        const active = pathname === item.href
+        return (
+          <Link key={item.href} to={item.href} aria-current={active ? 'page' : undefined} className="group">
+            <span className={`block overflow-hidden rounded-xl bg-paper-2 ${active ? 'ring-2 ring-ink' : ''}`}>
+              <img src={item.image} alt={item.alt} className="h-44 w-full object-cover object-[center_20%] transition duration-500 group-hover:scale-[1.03] sm:h-56 lg:h-72" />
+            </span>
+            <span className={`mt-2 block text-center text-[11px] uppercase tracking-[0.16em] ${active ? 'text-ink' : 'text-muted'}`}>{item.label}</span>
+          </Link>
+        )
+      })}
+    </nav>
   )
 }
 
