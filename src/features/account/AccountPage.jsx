@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
@@ -7,18 +7,66 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { useUi } from '@/contexts/UiContext'
 import { usePageMeta } from '@/hooks/usePageMeta'
-import { site } from '@/lib/site'
 import { sendPhoneOtp, signOut, updatePassword, verifyPhoneOtp } from '@/services/auth'
 
 const fieldClass = 'h-12 w-full rounded-xl border border-line bg-white px-4 text-sm outline-none placeholder:text-muted focus:border-[#0e9b00]'
+
+function OtpFields({ value, onChange }) {
+  const refs = useRef([])
+  const digits = Array.from({ length: 6 }, (_, index) => value[index] || '')
+
+  function write(next, focusIndex) {
+    onChange(next.replace(/\D/g, '').slice(0, 6))
+    if (focusIndex != null) refs.current[focusIndex]?.focus()
+  }
+
+  function onDigit(index, raw) {
+    const pasted = raw.replace(/\D/g, '')
+    if (pasted.length > 1) {
+      write(value.slice(0, index) + pasted, Math.min(index + pasted.length, 5))
+      return
+    }
+    const chars = digits.slice()
+    chars[index] = pasted
+    write(chars.join(''), pasted ? Math.min(index + 1, 5) : index)
+  }
+
+  function onKeyDown(index, event) {
+    if (event.key === 'Backspace' && !digits[index] && index > 0) {
+      const chars = digits.slice()
+      chars[index - 1] = ''
+      write(chars.join(''), index - 1)
+    }
+  }
+
+  return (
+    <div className="flex justify-between gap-2">
+      {digits.map((digit, index) => (
+        <input
+          key={index}
+          ref={(node) => { refs.current[index] = node }}
+          className="h-12 w-10 rounded-xl border border-line bg-white text-center text-lg outline-none focus:border-[#0e9b00]"
+          inputMode="numeric"
+          autoComplete={index === 0 ? 'one-time-code' : 'off'}
+          name={index === 0 ? 'one-time-code' : undefined}
+          aria-label={`Digit ${index + 1}`}
+          maxLength={index === 0 ? 6 : 1}
+          value={digit}
+          onChange={(event) => onDigit(index, event.target.value)}
+          onKeyDown={(event) => onKeyDown(index, event)}
+        />
+      ))}
+    </div>
+  )
+}
 
 function CampaignPanel() {
   return (
     <div className="relative h-32 md:h-full md:min-h-80">
       <img
-        src="/uploads/model6.png"
-        alt="Two women in red, one in a black cap and one in sunglasses"
-        className="absolute inset-0 h-full w-full object-cover object-[center_22%] md:object-[center_18%]"
+        src="/uploads/model1.png"
+        alt="A woman in red holding a woven black shoulder bag"
+        className="absolute inset-0 h-full w-full object-cover object-[center_18%]"
       />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/75 to-transparent px-5 pt-8 pb-3 md:px-8 md:pt-20 md:pb-8">
         <p className="max-w-sm font-serif text-xl text-paper md:text-4xl">Rice straw, made into leather.</p>
@@ -53,12 +101,14 @@ export default function AccountPage({ mode = 'account' }) {
 function LoginCard({ mode = 'account', onClose }) {
   const auth = useAuth()
   const toast = useToast()
+  const navigate = useNavigate()
   const [step, setStep] = useState('phone')
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [codeSent, setCodeSent] = useState(false)
   const phoneDigits = phone.replace(/\D/g, '').slice(0, 10)
   const phoneOk = phoneDigits.length === 10
 
@@ -86,24 +136,41 @@ function LoginCard({ mode = 'account', onClose }) {
   }
 
   async function continuePhone() {
+    if (!phoneOk) return
     setError('')
+    setOtp('')
+    setCodeSent(false)
+    setStep('otp')
     const result = await sendPhoneOtp(`+91${phoneDigits}`)
-    if (result.error) {
-      setError(result.error)
+    if (result.error) setError(result.error)
+    else setCodeSent(true)
+  }
+
+  function closeCard() {
+    if (onClose) {
+      onClose()
       return
     }
-    setStep('otp')
+    const index = window.history.state?.idx
+    if (typeof index === 'number' ? index > 0 : window.history.length > 1) {
+      navigate(-1)
+      return
+    }
+    navigate('/')
   }
 
   return (
-    <div className="mx-auto grid w-full max-w-[20.5rem] overflow-hidden rounded-3xl bg-white shadow-[0_18px_40px_rgba(22,24,21,0.12)] md:max-w-[680px] md:grid-cols-2">
+    <div className="relative mx-auto grid w-full max-w-[20.5rem] overflow-hidden rounded-3xl bg-white shadow-[0_18px_40px_rgba(22,24,21,0.12)] md:max-w-[680px] md:grid-cols-2">
+      <button
+        type="button"
+        className="absolute top-3 right-3 z-10 grid h-11 w-11 place-items-center rounded-full bg-ink text-white shadow-[0_2px_10px_rgba(22,24,21,0.28)]"
+        onClick={closeCard}
+        aria-label="Close"
+      >
+        <X size={18} />
+      </button>
       <CampaignPanel />
-      <div className="relative flex items-center px-5 py-4 md:px-8 md:py-10">
-        {onClose ? (
-          <button type="button" className="absolute top-3 right-3 grid h-11 w-11 place-items-center" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        ) : null}
+      <div className="flex items-center px-5 py-4 md:px-8 md:py-10">
         <div className="w-full max-w-[420px]">
           {auth.user && mode !== 'password' ? (
             <SignedIn label={auth.user.phone || auth.user.email} error={error} onLogout={async () => {
@@ -113,13 +180,17 @@ function LoginCard({ mode = 'account', onClose }) {
             }} />
           ) : (
             <>
-              <p className="font-serif text-3xl leading-none">{site.name}</p>
-              <p className="mt-1.5 text-[11px] uppercase tracking-[0.18em] text-muted">{site.tagline}</p>
-              <h1 className="mt-4 text-xl font-medium md:mt-6">{mode === 'password' ? 'New password' : 'Log in'}</h1>
+              <h1 className="text-xl font-medium">
+                {mode === 'password' ? 'New password' : step === 'otp' ? 'Enter the code' : 'Log in'}
+              </h1>
               <p className="mt-1 text-sm text-muted">
                 {mode === 'password'
                   ? 'Choose a new password for this account.'
-                  : 'Enter your mobile number. We’ll send a code.'}
+                  : step === 'otp'
+                    ? codeSent
+                      ? `Code sent to +91 ${phoneDigits}`
+                      : `Enter the 6-digit code for +91 ${phoneDigits}`
+                    : 'Enter your mobile number. We’ll send a code.'}
               </p>
               <form className="mt-4 md:mt-6" onSubmit={submit}>
                 {mode !== 'password' && step === 'phone' ? (
@@ -147,19 +218,7 @@ function LoginCard({ mode = 'account', onClose }) {
                   </button>
                 ) : null}
                 {mode !== 'password' && step === 'otp' ? (
-                  <>
-                    <p className="text-sm">+91 {phoneDigits}</p>
-                    <input
-                      className={`${fieldClass} mt-3`}
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
-                      name="one-time-code"
-                      required
-                      placeholder="6-digit code"
-                      value={otp}
-                      onChange={(event) => setOtp(event.target.value.replace(/\D/g, '').slice(0, 6))}
-                    />
-                  </>
+                  <OtpFields value={otp} onChange={setOtp} />
                 ) : null}
                 {mode === 'password' ? (
                   <input
@@ -174,18 +233,23 @@ function LoginCard({ mode = 'account', onClose }) {
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 ) : null}
-                {error ? <p className="mt-3 text-sm text-sale">{error}</p> : null}
+                {error ? <p className="mt-3 text-sm text-sale">{error.includes('Supabase URL') ? 'A code can’t be sent until accounts are connected.' : error}</p> : null}
                 {message ? <p className="mt-3 text-sm text-success">{message}</p> : null}
                 {mode === 'password' || step === 'otp' ? (
-                  <Button type="submit" variant="green" className="mt-4 w-full rounded-xl">
+                  <Button type="submit" variant="green" className="mt-4 w-full rounded-xl" disabled={mode !== 'password' && otp.length < 6}>
                     {mode === 'password' ? 'Update password' : 'Verify'}
                   </Button>
                 ) : null}
               </form>
               {mode !== 'password' && step === 'otp' ? (
-                <button type="button" className="mt-4 text-sm underline" onClick={() => { setStep('phone'); setOtp('') }}>
-                  Use a different number
-                </button>
+                <div className="mt-4 flex items-center justify-between gap-3 text-sm">
+                  <button type="button" className="text-[#0e9b00]" onClick={() => { setStep('phone'); setOtp(''); setError('') }}>
+                    Change number
+                  </button>
+                  <button type="button" className="text-ink" onClick={continuePhone}>
+                    Resend code
+                  </button>
+                </div>
               ) : null}
               <p className="mt-4 text-xs leading-5 text-muted md:mt-8">
                 By continuing, you agree to the{' '}

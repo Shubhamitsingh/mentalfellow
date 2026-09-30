@@ -20,7 +20,11 @@ export function InviteBanner() {
 
   function openCashback() {
     if (!auth.ready) return
-    navigate(auth.user ? '/creators' : '/login')
+    if (auth.user) {
+      navigate('/creators')
+      return
+    }
+    navigate('/creators', { state: { login: true } })
   }
 
   return (

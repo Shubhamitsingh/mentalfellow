@@ -9,17 +9,22 @@ import { Navbar } from '@/components/layout/Navbar'
 import { SearchModal } from '@/components/layout/SearchModal'
 import { WelcomePopup } from '@/components/layout/WelcomePopup'
 import { LoginModal } from '@/features/account/AccountPage'
+import { useAuth } from '@/contexts/AuthContext'
 import { useUi } from '@/contexts/UiContext'
 
 export function StorefrontLayout() {
-  const { pathname } = useLocation()
+  const location = useLocation()
+  const { pathname, state } = location
   const ui = useUi()
-  const { close } = ui
+  const auth = useAuth()
+  const { close, openLogin } = ui
+  const askLogin = Boolean(state?.login) && !auth.user
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    close()
-  }, [pathname, close])
+    if (askLogin) openLogin()
+    else close()
+  }, [pathname, askLogin, close, openLogin])
 
   return (
     <div className="flex min-h-svh flex-col">
