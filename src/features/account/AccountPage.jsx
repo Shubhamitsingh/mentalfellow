@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -7,58 +7,10 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { useUi } from '@/contexts/UiContext'
 import { usePageMeta } from '@/hooks/usePageMeta'
-import { sendPhoneOtp, signOut, updatePassword, verifyPhoneOtp } from '@/services/auth'
+import { sendPasswordReset, signIn, signOut, signUp, updatePassword } from '@/services/auth'
 
 const fieldClass = 'h-12 w-full rounded-xl border border-line bg-white px-4 text-sm outline-none placeholder:text-muted focus:border-[#0e9b00]'
-
-function OtpFields({ value, onChange }) {
-  const refs = useRef([])
-  const digits = Array.from({ length: 6 }, (_, index) => value[index] || '')
-
-  function write(next, focusIndex) {
-    onChange(next.replace(/\D/g, '').slice(0, 6))
-    if (focusIndex != null) refs.current[focusIndex]?.focus()
-  }
-
-  function onDigit(index, raw) {
-    const pasted = raw.replace(/\D/g, '')
-    if (pasted.length > 1) {
-      write(value.slice(0, index) + pasted, Math.min(index + pasted.length, 5))
-      return
-    }
-    const chars = digits.slice()
-    chars[index] = pasted
-    write(chars.join(''), pasted ? Math.min(index + 1, 5) : index)
-  }
-
-  function onKeyDown(index, event) {
-    if (event.key === 'Backspace' && !digits[index] && index > 0) {
-      const chars = digits.slice()
-      chars[index - 1] = ''
-      write(chars.join(''), index - 1)
-    }
-  }
-
-  return (
-    <div className="flex justify-between gap-2">
-      {digits.map((digit, index) => (
-        <input
-          key={index}
-          ref={(node) => { refs.current[index] = node }}
-          className="h-12 w-10 rounded-xl border border-line bg-white text-center text-lg outline-none focus:border-[#0e9b00]"
-          inputMode="numeric"
-          autoComplete={index === 0 ? 'one-time-code' : 'off'}
-          name={index === 0 ? 'one-time-code' : undefined}
-          aria-label={`Digit ${index + 1}`}
-          maxLength={index === 0 ? 6 : 1}
-          value={digit}
-          onChange={(event) => onDigit(index, event.target.value)}
-          onKeyDown={(event) => onKeyDown(index, event)}
-        />
-      ))}
-    </div>
-  )
-}
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function CampaignPanel() {
   return (
@@ -87,7 +39,7 @@ export function LoginModal() {
 export default function AccountPage({ mode = 'account' }) {
   usePageMeta({
     title: mode === 'password' ? 'New password' : 'Log in',
-    description: 'Log in or create a Mental Fellow account.',
+    description: 'Log in or create a Mental Fellow account with your email.',
     path: mode === 'password' ? '/account/update-password' : '/login',
   })
 
@@ -102,48 +54,89 @@ function LoginCard({ mode = 'account', onClose }) {
   const auth = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
-  const [step, setStep] = useState('phone')
-  const [phone, setPhone] = useState('')
-  const [otp, setOtp] = useState('')
+  const [view, setView] = useState('login')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [codeSent, setCodeSent] = useState(false)
-  const phoneDigits = phone.replace(/\D/g, '').slice(0, 10)
-  const phoneOk = phoneDigits.length === 10
+  const [busy, setBusy] = useState(false)
+
+  function resetNotice() {
+    setError('')
+    setMessage('')
+  }
+
+  function show(next) {
+    resetNotice()
+    setPassword('')
+    setConfirm('')
+    setView(next)
+  }
 
   async function submit(event) {
     event.preventDefault()
-    setError('')
-    setMessage('')
+    resetNotice()
+    const cleanEmail = email.trim().toLowerCase()
+
     if (mode === 'password') {
+      if (password.length < 8) {
+        setError('Use at least 8 characters.')
+        return
+      }
+      setBusy(true)
       const result = await updatePassword(password)
+      setBusy(false)
       if (result.error) {
-        setError(result.error)
+        setError(accountError(result.error))
         return
       }
       setMessage('Password updated.')
       toast({ title: 'Password updated' })
       return
     }
-    const result = await verifyPhoneOtp(`+91${phoneDigits}`, otp.trim())
-    if (result.error) {
-      setError(result.error)
+
+    if (!emailPattern.test(cleanEmail)) {
+      setError('Enter a valid email address.')
       return
     }
-    toast({ title: 'Signed in' })
-    onClose?.()
-  }
 
-  async function continuePhone() {
-    if (!phoneOk) return
-    setError('')
-    setOtp('')
-    setCodeSent(false)
-    setStep('otp')
-    const result = await sendPhoneOtp(`+91${phoneDigits}`)
-    if (result.error) setError(result.error)
-    else setCodeSent(true)
+    if (view === 'reset') {
+      setBusy(true)
+      const result = await sendPasswordReset(cleanEmail)
+      setBusy(false)
+      if (result.error) setError(accountError(result.error))
+      else setMessage('Check your email for a link to choose a new password.')
+      return
+    }
+
+    if (password.length < 8) {
+      setError('Use at least 8 characters.')
+      return
+    }
+    if (view === 'signup' && password !== confirm) {
+      setError('Those passwords do not match.')
+      return
+    }
+
+    setBusy(true)
+    const result = view === 'signup'
+      ? await signUp(cleanEmail, password)
+      : await signIn(cleanEmail, password)
+    setBusy(false)
+    if (result.error) {
+      setError(accountError(result.error))
+      return
+    }
+    if (result.needsConfirmation) {
+      setMessage('Account created. Confirm it from the email we sent, then log in.')
+      setView('login')
+      setPassword('')
+      setConfirm('')
+      return
+    }
+    toast({ title: view === 'signup' ? 'Account created' : 'Signed in' })
+    onClose?.()
   }
 
   function closeCard() {
@@ -159,6 +152,21 @@ function LoginCard({ mode = 'account', onClose }) {
     navigate('/')
   }
 
+  const title = mode === 'password'
+    ? 'New password'
+    : view === 'signup'
+      ? 'Create an account'
+      : view === 'reset'
+        ? 'Reset password'
+        : 'Log in'
+  const intro = mode === 'password'
+    ? 'Choose a new password for this account.'
+    : view === 'signup'
+      ? 'Use your email and a password of at least 8 characters.'
+      : view === 'reset'
+        ? 'We’ll email you a link to choose a new password.'
+        : 'Log in with the email and password for your account.'
+
   return (
     <div className="relative mx-auto grid w-full max-w-[20.5rem] overflow-hidden rounded-3xl bg-white shadow-[0_18px_40px_rgba(22,24,21,0.12)] md:max-w-[680px] md:grid-cols-2">
       <button
@@ -173,59 +181,40 @@ function LoginCard({ mode = 'account', onClose }) {
       <div className="flex items-center px-5 py-4 md:px-8 md:py-10">
         <div className="w-full max-w-[420px]">
           {auth.user && mode !== 'password' ? (
-            <SignedIn label={auth.user.phone || auth.user.email} error={error} onLogout={async () => {
+            <SignedIn label={auth.user.email} error={error} onLogout={async () => {
               const result = await signOut()
               if (result.error) setError(result.error)
               else toast({ title: 'Signed out' })
             }} />
+          ) : mode === 'password' && auth.ready && !auth.user ? (
+            <>
+              <h1 className="text-xl font-medium">Reset link required</h1>
+              <p className="mt-1 text-sm text-muted">Open the link in your email, then choose a new password on this page.</p>
+              <Link to="/login" className="mt-4 inline-block text-sm text-[#0e9b00]">Back to log in</Link>
+            </>
           ) : (
             <>
-              <h1 className="text-xl font-medium">
-                {mode === 'password' ? 'New password' : step === 'otp' ? 'Enter the code' : 'Log in'}
-              </h1>
-              <p className="mt-1 text-sm text-muted">
-                {mode === 'password'
-                  ? 'Choose a new password for this account.'
-                  : step === 'otp'
-                    ? codeSent
-                      ? `Code sent to +91 ${phoneDigits}`
-                      : `Enter the 6-digit code for +91 ${phoneDigits}`
-                    : 'Enter your mobile number. We’ll send a code.'}
-              </p>
-              <form className="mt-4 md:mt-6" onSubmit={submit}>
-                {mode !== 'password' && step === 'phone' ? (
-                  <label className="flex h-12 overflow-hidden rounded-xl border border-line bg-white focus-within:border-[#0e9b00]">
-                    <span className="grid place-items-center border-r border-line px-3 text-sm text-muted">+91</span>
-                    <input
-                      className="min-w-0 flex-1 px-3 text-sm outline-none"
-                      inputMode="numeric"
-                      autoComplete="tel"
-                      name="tel"
-                      placeholder="Mobile number"
-                      value={phoneDigits}
-                      onChange={(event) => setPhone(event.target.value)}
-                    />
-                  </label>
+              <h1 className="text-xl font-medium">{title}</h1>
+              <p className="mt-1 text-sm text-muted">{intro}</p>
+              <form className="mt-4 grid gap-3 md:mt-6" onSubmit={submit}>
+                {mode !== 'password' ? (
+                  <input
+                    className={fieldClass}
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    required
+                    placeholder="Email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                  />
                 ) : null}
-                {mode !== 'password' && step === 'phone' ? (
-                  <button
-                    type="button"
-                    disabled={!phoneOk}
-                    className="mt-4 h-12 w-full rounded-xl bg-[#0e9b00] text-[11px] font-medium uppercase tracking-[0.16em] text-white disabled:bg-[#d7e8d4] disabled:text-[#5f6b62]"
-                    onClick={continuePhone}
-                  >
-                    Continue
-                  </button>
-                ) : null}
-                {mode !== 'password' && step === 'otp' ? (
-                  <OtpFields value={otp} onChange={setOtp} />
-                ) : null}
-                {mode === 'password' ? (
+                {view !== 'reset' ? (
                   <input
                     className={fieldClass}
                     type="password"
                     name="password"
-                    autoComplete="new-password"
+                    autoComplete={mode === 'password' || view === 'signup' ? 'new-password' : 'current-password'}
                     required
                     minLength={8}
                     placeholder="Password"
@@ -233,22 +222,41 @@ function LoginCard({ mode = 'account', onClose }) {
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 ) : null}
-                {error ? <p className="mt-3 text-sm text-sale">{error.includes('Supabase URL') ? 'A code can’t be sent until accounts are connected.' : error}</p> : null}
-                {message ? <p className="mt-3 text-sm text-success">{message}</p> : null}
-                {mode === 'password' || step === 'otp' ? (
-                  <Button type="submit" variant="green" className="mt-4 w-full rounded-xl" disabled={mode !== 'password' && otp.length < 6}>
-                    {mode === 'password' ? 'Update password' : 'Verify'}
-                  </Button>
+                {mode !== 'password' && view === 'signup' ? (
+                  <input
+                    className={fieldClass}
+                    type="password"
+                    name="confirm"
+                    autoComplete="new-password"
+                    required
+                    minLength={8}
+                    placeholder="Confirm password"
+                    value={confirm}
+                    onChange={(event) => setConfirm(event.target.value)}
+                  />
                 ) : null}
+                {error ? <p className="text-sm text-sale">{error}</p> : null}
+                {message ? <p className="text-sm text-success">{message}</p> : null}
+                <Button type="submit" variant="green" className="w-full rounded-xl" disabled={busy}>
+                  {mode === 'password' ? 'Update password' : view === 'signup' ? 'Create account' : view === 'reset' ? 'Send reset link' : 'Log in'}
+                </Button>
               </form>
-              {mode !== 'password' && step === 'otp' ? (
+              {mode !== 'password' ? (
                 <div className="mt-4 flex items-center justify-between gap-3 text-sm">
-                  <button type="button" className="text-[#0e9b00]" onClick={() => { setStep('phone'); setOtp(''); setError('') }}>
-                    Change number
-                  </button>
-                  <button type="button" className="text-ink" onClick={continuePhone}>
-                    Resend code
-                  </button>
+                  {view === 'login' ? (
+                    <button type="button" className="text-[#0e9b00]" onClick={() => show('signup')}>
+                      Create an account
+                    </button>
+                  ) : (
+                    <button type="button" className="text-[#0e9b00]" onClick={() => show('login')}>
+                      Log in
+                    </button>
+                  )}
+                  {view === 'reset' ? null : (
+                    <button type="button" className="text-ink" onClick={() => show('reset')}>
+                      Forgot password
+                    </button>
+                  )}
                 </div>
               ) : null}
               <p className="mt-4 text-xs leading-5 text-muted md:mt-8">
@@ -265,12 +273,17 @@ function LoginCard({ mode = 'account', onClose }) {
   )
 }
 
+function accountError(error) {
+  if (String(error).includes('Supabase URL')) return 'Accounts open once the store database is connected.'
+  return error
+}
+
 function SignedIn({ label, error, onLogout }) {
   return (
     <>
       <p className="text-[11px] uppercase tracking-[0.18em] text-muted">Account</p>
       <h1 className="mt-3 font-serif text-4xl">Hello</h1>
-      <p className="mt-4 text-sm">{label}</p>
+      <p className="mt-4 break-all text-sm">{label}</p>
       <p className="mt-3 text-sm text-muted">Orders and saved details will live here once checkout is connected.</p>
       <Button variant="green" className="mt-8 w-full rounded-xl" onClick={onLogout}>Log out</Button>
       {error ? <p className="mt-4 text-sm text-sale">{error}</p> : null}

@@ -347,7 +347,7 @@ export function DiscoverBanner() {
         <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-ink/20" />
         <div className="relative flex min-h-[560px] flex-col items-center justify-end px-6 pb-10 text-center text-paper md:min-h-[720px] md:pb-14">
           <h2 className="font-sans text-4xl font-medium uppercase tracking-[0.18em] md:text-6xl">{discover.title}</h2>
-          <ButtonLink to={discover.href} variant="inverse" className="mt-6 rounded-full px-8">
+          <ButtonLink to={discover.href} variant="yellow" className="mt-6 rounded-full px-8">
             {discover.action}
           </ButtonLink>
         </div>

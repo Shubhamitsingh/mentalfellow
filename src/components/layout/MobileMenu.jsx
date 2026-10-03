@@ -18,7 +18,7 @@ export function MobileMenu({ open, onClose }) {
   const ui = useUi()
   const auth = useAuth()
   const signedIn = Boolean(auth.user)
-  const who = auth.user?.phone || auth.user?.email || 'Account'
+  const who = auth.user?.email || 'Account'
 
   return (
     <Drawer open={open} onClose={onClose} side="left" label="Menu" bare widthClass="w-3/4 overflow-hidden rounded-r-2xl md:max-w-[440px]">
